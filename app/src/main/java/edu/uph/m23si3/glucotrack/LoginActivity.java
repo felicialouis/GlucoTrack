@@ -64,12 +64,24 @@ public class LoginActivity extends AppCompatActivity {
 
                 if (email.equals(savedEmail) && password.equals(savedPassword)){
                     emailFound = true;
+
+                    SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.putString("userId", email); // <- INI SELALU DIEKSEKUSI, MAUPUN GAGAL LOGIN
+                    editor.apply();
+
                     toHome();
                 } else {
                     for (Account account : accounts) {
                         if (account.getEmail().equals(email)) {
                             emailFound = true;
                             if (account.getPassword().equals(password)) {
+
+                                SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = prefs.edit();
+                                editor.putString("userId", email); // <- INI SELALU DIEKSEKUSI, MAUPUN GAGAL LOGIN
+                                editor.apply();
+
                                 toHome();
                             } else {
                                 Toast toast = Toast.makeText(getApplicationContext(), "Masukkan password yang benar!", Toast.LENGTH_LONG);

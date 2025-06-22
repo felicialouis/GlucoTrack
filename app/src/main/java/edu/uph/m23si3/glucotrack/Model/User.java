@@ -1,19 +1,16 @@
 package edu.uph.m23si3.glucotrack.Model;
 
-public class User extends Account {
+public class User extends Account{
     private String name;
     private int age;
     private String gender;
 
-    // Constructor dengan tambahan email dan password
-    public User(String name, int age, String gender, String email, String password) {
-        super(email, password); // Memanggil constructor dari Account
+    public User (String name, int age, String gender) {
         this.name = name;
         this.age = age;
         this.gender = gender;
     }
 
-    // Getter & Setter
     public String getName() {
         return name;
     }

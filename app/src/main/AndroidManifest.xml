@@ -29,16 +29,7 @@
             android:name=".WelcomeActivity"
             android:exported="false" />
         <activity
-            android:name=".StartActivity3"
-            android:exported="false" />
-        <activity
-            android:name=".StartActivity2"
-            android:exported="false" />
-        <activity
             android:name=".MainActivity"
-            android:exported="false" />
-        <activity
-            android:name=".StartActivity"
             android:exported="true"
             android:label="@string/app_name">
             <intent-filter>
