@@ -54,7 +54,7 @@ public class StartActivity3 extends AppCompatActivity {
                 updateOnboardingPage();
             } else {
                 // Kalau sudah selesai onboarding, lanjut ke login/signup
-                Intent intent = new Intent(StartActivity3.this, MainActivity.class);
+                Intent intent = new Intent(StartActivity3.this, WelcomeActivity.class);
                 startActivity(intent);
                 finish();
             }
