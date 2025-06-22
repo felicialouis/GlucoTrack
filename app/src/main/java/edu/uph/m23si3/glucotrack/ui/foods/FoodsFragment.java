@@ -2,6 +2,7 @@ package edu.uph.m23si3.glucotrack.ui.foods;
 
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,15 +14,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.HashMap;
 
+import edu.uph.m23si3.glucotrack.NotificationActivity;
 import edu.uph.m23si3.glucotrack.R;
+import edu.uph.m23si3.glucotrack.databinding.FragmentFoodsBinding;
+import edu.uph.m23si3.glucotrack.databinding.FragmentHomeBinding;
+import edu.uph.m23si3.glucotrack.ui.home.HomeViewModel;
 
 public class FoodsFragment extends Fragment {
 
+    ImageView imgNotification;
     EditText edtBreakfast, edtLunch, edtDinner, edtSnack;
     TextView txtHasilBreakfast, txtHasilLunch, txtHasilDinner, txtHasilSnack, txtTotal;
     Button btnSave;
@@ -32,6 +39,9 @@ public class FoodsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_foods, container, false);
+
+        imgNotification = view.findViewById(R.id.imgNotification);
+        imgNotification.setOnClickListener(v -> toNotification());
 
         // EditTexts
         edtBreakfast = view.findViewById(R.id.edtBreakfast);
@@ -63,6 +73,11 @@ public class FoodsFragment extends Fragment {
         btnSave.setOnClickListener(v -> updateGlucoseDisplay());
 
         return view;
+    }
+
+    private void toNotification() {
+        Intent intent = new Intent(getContext(), NotificationActivity.class);
+        startActivity(intent);
     }
 
     private void updateGlucoseDisplay() {
