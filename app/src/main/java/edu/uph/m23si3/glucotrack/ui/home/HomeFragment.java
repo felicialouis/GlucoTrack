@@ -6,28 +6,33 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
 import edu.uph.m23si3.glucotrack.Adapter.InsulinNotesAdapter;
 import edu.uph.m23si3.glucotrack.AddInsulinNotesActivity;
 import edu.uph.m23si3.glucotrack.Model.InsulinNotes;
+import edu.uph.m23si3.glucotrack.NotificationActivity;
 import edu.uph.m23si3.glucotrack.Utils.InsulinNotesStorage;
 import edu.uph.m23si3.glucotrack.databinding.FragmentHomeBinding;
 
 public class HomeFragment extends Fragment {
-
     private FragmentHomeBinding binding;
+    private ImageView imgNotification;
     private Button btnPump;
-    private ListView listView;
     private ArrayList<InsulinNotes> insulinNotesArrayList;
-    private static InsulinNotesAdapter adapter;
+    private RecyclerView rvInsulinNotes;
+    private InsulinNotesAdapter adapter;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -36,17 +41,21 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        btnPump = binding.btnPump;
-        listView = binding.listView;
+        imgNotification = binding.imgNotification;
+        imgNotification.setOnClickListener(v -> toNotification());
 
+        btnPump = binding.btnPump;
         btnPump.setOnClickListener(v -> toAddInsulinNotes());
+
+        rvInsulinNotes = binding.rvInsulinNotes;
+        rvInsulinNotes.setLayoutManager(new LinearLayoutManager(getContext()));
 
         // Load data dari SharedPreferences
         insulinNotesArrayList = InsulinNotesStorage.loadNotes(getContext());
 
         // Inisialisasi adapter
         adapter = new InsulinNotesAdapter(insulinNotesArrayList, getContext());
-        listView.setAdapter(adapter);
+        rvInsulinNotes.setAdapter(adapter);
 
         return root;
     }
@@ -69,6 +78,11 @@ public class HomeFragment extends Fragment {
 
     private void toAddInsulinNotes() {
         Intent intent = new Intent(getContext(), AddInsulinNotesActivity.class);
+        startActivity(intent);
+    }
+
+    private void toNotification() {
+        Intent intent = new Intent(getContext(), NotificationActivity.class);
         startActivity(intent);
     }
 }

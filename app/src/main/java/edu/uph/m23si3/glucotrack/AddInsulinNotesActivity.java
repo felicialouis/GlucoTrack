@@ -154,6 +154,10 @@ public class AddInsulinNotesActivity extends AppCompatActivity {
 
                 int insulin = Integer.parseInt(strInsulin);
 
+                if (note.isEmpty()){
+                    note = "(None)";
+                }
+
                 InsulinNotes newNote = new InsulinNotes(insulin, note, LocalDate.now(), LocalTime.now());
 
                 ArrayList<InsulinNotes> existingNotes = InsulinNotesStorage.loadNotes(getApplicationContext());

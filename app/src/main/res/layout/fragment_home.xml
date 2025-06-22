@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F6F8FA"
+    android:layout_marginBottom="50dp"
     tools:context=".ui.home.HomeFragment">
 
     <!-- HEADER -->
@@ -39,7 +40,7 @@
             app:layout_constraintEnd_toEndOf="parent" />
 
         <ImageView
-            android:id="@+id/notification"
+            android:id="@+id/imgNotification"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:src="@drawable/notification"
@@ -47,7 +48,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
+<!--END OF HEADER-->
 
     <LinearLayout
         android:id="@+id/llyContent"
@@ -181,15 +182,14 @@
                 android:textAlignment="center"
                 android:background="@drawable/btn_rounded"
                 android:textStyle="bold"
+                android:textColor="@color/white"
                 android:text="+ PUMP" />
 
-            <ListView
-                android:id="@+id/listView"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvInsulinNotes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:divider="@null"/>
-
-
+                android:nestedScrollingEnabled="false"/>
         </LinearLayout>
     </LinearLayout>
 

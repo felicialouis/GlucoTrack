@@ -7,13 +7,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import edu.uph.m23si3.glucotrack.Model.InsulinNotes;
 import edu.uph.m23si3.glucotrack.R;
 import edu.uph.m23si3.glucotrack.Utils.InsulinNotesStorage;
 
-public class InsulinNotesAdapter extends BaseAdapter {
+public class InsulinNotesAdapter extends RecyclerView.Adapter<InsulinNotesAdapter.ViewHolder> {
 
     private ArrayList<InsulinNotes> notesList;
     private Context context;
@@ -33,50 +34,40 @@ public class InsulinNotesAdapter extends BaseAdapter {
         this.context = context;
     }
 
-    @Override
-    public int getCount() {
-        return notesList.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return notesList.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    static class ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView txvInsulin, txvNote, txvTime;
         ImageView imgMenu;
+
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            txvInsulin = itemView.findViewById(R.id.txvInsulin);
+            txvNote = itemView.findViewById(R.id.txvNote);
+            txvTime = itemView.findViewById(R.id.txvTime);
+            imgMenu = itemView.findViewById(R.id.imgMenu);
+        }
+    }
+
+    @NonNull
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.insulin_notes_card, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         InsulinNotes note = notesList.get(position);
-        ViewHolder holder;
-
-        if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.insulin_notes_card, parent, false);
-            holder = new ViewHolder();
-            holder.txvInsulin = convertView.findViewById(R.id.txvInsulin);
-            holder.txvNote = convertView.findViewById(R.id.txvNote);
-            holder.txvTime = convertView.findViewById(R.id.txvTime);
-            holder.imgMenu = convertView.findViewById(R.id.imgMenu);
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
 
         holder.txvInsulin.setText(String.valueOf(note.getNumberOfUnitOfInsulin()));
         holder.txvNote.setText(note.getNotes());
         holder.txvTime.setText(note.getTime().format(DateTimeFormatter.ofPattern("hh:mm a")));
 
         holder.imgMenu.setOnClickListener(v -> showPopupMenu(v, position));
+    }
 
-        return convertView;
+    @Override
+    public int getItemCount() {
+        return notesList.size();
     }
 
     private void showPopupMenu(View view, int position) {
