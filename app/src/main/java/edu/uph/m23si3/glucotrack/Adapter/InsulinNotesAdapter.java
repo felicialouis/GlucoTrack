@@ -16,20 +16,21 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import edu.uph.m23si3.glucotrack.AddInsulinNotesActivity;
 import edu.uph.m23si3.glucotrack.Model.InsulinNotes;
 import edu.uph.m23si3.glucotrack.R;
-import edu.uph.m23si3.glucotrack.Utils.InsulinNotesStorage;
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 public class InsulinNotesAdapter extends RecyclerView.Adapter<InsulinNotesAdapter.ViewHolder> {
 
-    private ArrayList<InsulinNotes> notesList;
+    private RealmResults<InsulinNotes> notesList;
     private Context context;
 
-    public InsulinNotesAdapter(ArrayList<InsulinNotes> notesList, Context context) {
+    public InsulinNotesAdapter(RealmResults<InsulinNotes> notesList, Context context) {
         this.notesList = notesList;
         this.context = context;
     }
@@ -58,11 +59,14 @@ public class InsulinNotesAdapter extends RecyclerView.Adapter<InsulinNotesAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         InsulinNotes note = notesList.get(position);
 
-        holder.txvInsulin.setText(String.valueOf(note.getNumberOfUnitOfInsulin()));
+        holder.txvInsulin.setText(String.valueOf(note.getDose()));
         holder.txvNote.setText(note.getNotes());
-        holder.txvTime.setText(note.getTime().format(DateTimeFormatter.ofPattern("hh:mm a")));
 
-        holder.imgMenu.setOnClickListener(v -> showPopupMenu(v, position));
+        // Format waktu dari string atau timestamp
+        String time = note.getTime(); // misal "08:30"
+        holder.txvTime.setText(time); // Atau tambahkan format lebih bagus
+
+        holder.imgMenu.setOnClickListener(v -> showPopupMenu(v, note.getId()));
     }
 
     @Override
@@ -70,7 +74,7 @@ public class InsulinNotesAdapter extends RecyclerView.Adapter<InsulinNotesAdapte
         return notesList.size();
     }
 
-    private void showPopupMenu(View view, int position) {
+    private void showPopupMenu(View view, int noteId) {
         PopupMenu popupMenu = new PopupMenu(context, view);
         MenuInflater inflater = popupMenu.getMenuInflater();
         inflater.inflate(R.menu.insulin_note_menu, popupMenu.getMenu());
@@ -80,30 +84,42 @@ public class InsulinNotesAdapter extends RecyclerView.Adapter<InsulinNotesAdapte
 
             if (id == R.id.menuEdit) {
                 Intent intent = new Intent(context, AddInsulinNotesActivity.class);
-                intent.putExtra("edit_position", position);
+                intent.putExtra("edit_id", noteId); // kirim ID ke AddInsulinNotesActivity
                 context.startActivity(intent);
                 return true;
             } else if (id == R.id.menuDelete) {
-                confirmDelete(position);
+                confirmDelete(noteId);
                 return true;
             }
 
             return false;
         });
+
         popupMenu.show();
     }
 
-    private void confirmDelete(int position) {
+    private void confirmDelete(int noteId) {
         new AlertDialog.Builder(context)
-                .setTitle("Hapus Catatan")
-                .setMessage("Yakin ingin menghapus catatan ini?")
-                .setPositiveButton("Hapus", (dialog, which) -> {
-                    notesList.remove(position);
-                    InsulinNotesStorage.saveNotes(context, notesList);
-                    notifyDataSetChanged();
-                    Toast.makeText(context, "Catatan dihapus", Toast.LENGTH_SHORT).show();
+                .setTitle("Delete Note")
+                .setMessage("Are you sure you want to delete this note?")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.executeTransactionAsync(r -> {
+                        InsulinNotes note = r.where(InsulinNotes.class).equalTo("id", noteId).findFirst();
+                        if (note != null) {
+                            note.deleteFromRealm();
+                        }
+                    }, () -> {
+                        Toast.makeText(context, "Note deleted", Toast.LENGTH_SHORT).show();
+                        notifyDataSetChanged();
+                    }, error -> {
+                        Toast.makeText(context, "Fail to delete: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                    });
+
+                    realm.close();
+                    notifyDataSetChanged(); // refresh list
                 })
-                .setNegativeButton("Batal", null)
+                .setNegativeButton("Cancel", null)
                 .show();
     }
 }

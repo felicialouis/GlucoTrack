@@ -20,8 +20,7 @@
             android:id="@+id/imgOnboarding"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:layout_marginBottom="24dp"
-            android:src="@drawable/profile" />
+            android:src="@drawable/logo" />
 
         <!-- Judul -->
         <TextView
@@ -31,8 +30,7 @@
             android:text="CGM and Insulin"
             android:textSize="22sp"
             android:textStyle="bold"
-            android:textColor="#00796B"
-            android:layout_marginBottom="12dp" />
+            android:textColor="#00796B"/>
 
         <!-- Deskripsi -->
         <TextView
@@ -42,8 +40,7 @@
             android:text="GlukoTrack+ gives you smart insulin recommendations based on real-time CGM monitoring."
             android:textSize="16sp"
             android:gravity="center"
-            android:textColor="#444444"
-            android:layout_marginBottom="32dp" />
+            android:textColor="#444444" />
 
         <!-- Tombol NEXT -->
         <Button
