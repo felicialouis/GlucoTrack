@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
 }
+apply(plugin = "realm-android")
 
 android {
     namespace = "edu.uph.m23si3.glucotrack"
@@ -8,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "edu.uph.m23si3.glucotrack"
-        minSdk = 28
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -46,6 +47,7 @@ dependencies {
     implementation(libs.navigation.ui)
     implementation(libs.legacy.support.v4)
     implementation(libs.activity)
+    implementation("io.realm:realm-android-library:10.15.1")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

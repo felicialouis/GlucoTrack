@@ -23,8 +23,9 @@
         <ImageView
             android:id="@+id/logo"
             android:layout_gravity="center"
-            android:layout_width="150dp"
-            android:layout_height="150dp"/>
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:src="@drawable/logo_with_title"/>
 
         <EditText
             android:id="@+id/edtEmail"
@@ -59,7 +60,7 @@
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Belum Punya Akun? " />
+                android:text="Don't have account? " />
 
             <TextView
                 android:id="@+id/txvSignup"
