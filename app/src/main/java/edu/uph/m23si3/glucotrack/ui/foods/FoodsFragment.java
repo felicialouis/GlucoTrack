@@ -1,7 +1,6 @@
 package edu.uph.m23si3.glucotrack.ui.foods;
 
-import androidx.lifecycle.ViewModelProvider;
-
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -20,48 +19,43 @@ import android.widget.Toast;
 
 import java.util.HashMap;
 
+import edu.uph.m23si3.glucotrack.CalenderActivity;
 import edu.uph.m23si3.glucotrack.NotificationActivity;
 import edu.uph.m23si3.glucotrack.R;
-import edu.uph.m23si3.glucotrack.databinding.FragmentFoodsBinding;
-import edu.uph.m23si3.glucotrack.databinding.FragmentHomeBinding;
-import edu.uph.m23si3.glucotrack.ui.home.HomeViewModel;
 
 public class FoodsFragment extends Fragment {
 
-    ImageView imgNotification;
-    EditText edtBreakfast, edtLunch, edtDinner, edtSnack;
-    TextView txtHasilBreakfast, txtHasilLunch, txtHasilDinner, txtHasilSnack, txtTotal;
-    Button btnSave;
+    private ImageView imgNotification, tombolkalender;
+    private EditText edtBreakfast, edtLunch, edtDinner, edtSnack;
+    private TextView txtHasilBreakfast, txtHasilLunch, txtHasilDinner, txtHasilSnack, txtTotal;
+    private Button btnSave;
 
-    HashMap<String, Integer> glucoseMap;
+    private HashMap<String, Integer> glucoseMap;
 
+    @SuppressLint("MissingInflatedId")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_foods, container, false);
 
+        // Inisialisasi View
         imgNotification = view.findViewById(R.id.imgNotification);
-        imgNotification.setOnClickListener(v -> toNotification());
+        tombolkalender = view.findViewById(R.id.tombolkalender);
 
-        // EditTexts
         edtBreakfast = view.findViewById(R.id.edtBreakfast);
         edtLunch = view.findViewById(R.id.edtLunch);
         edtDinner = view.findViewById(R.id.edtDinner);
         edtSnack = view.findViewById(R.id.edtSnack);
 
-        // TextViews for each meal's glucose result
         txtHasilBreakfast = view.findViewById(R.id.txtHasilBreakfast);
         txtHasilLunch = view.findViewById(R.id.txtHasilLunch);
         txtHasilDinner = view.findViewById(R.id.txtHasilDinner);
         txtHasilSnack = view.findViewById(R.id.txtHasilSnack);
-
-        // Total TextView
         txtTotal = view.findViewById(R.id.txtTotal);
 
-        // Save button
         btnSave = view.findViewById(R.id.btnSave);
 
-        // Glucose values for known foods
+        // Glukosa Map
         glucoseMap = new HashMap<>();
         glucoseMap.put("Nasi", 60);
         glucoseMap.put("Roti", 40);
@@ -69,15 +63,22 @@ public class FoodsFragment extends Fragment {
         glucoseMap.put("Telur", 0);
         glucoseMap.put("Apel", 20);
 
-        // Button action
+        // Tombol Simpan & Hitung Glukosa
         btnSave.setOnClickListener(v -> updateGlucoseDisplay());
 
-        return view;
-    }
+        // Tombol Kalender: Kirim total glukosa ke CalenderActivity
+        tombolkalender.setOnClickListener(v -> {
+            int totalGlucose = getGlucoseFromInput(edtBreakfast, txtHasilBreakfast, "Breakfast")
+                    + getGlucoseFromInput(edtLunch, txtHasilLunch, "Lunch")
+                    + getGlucoseFromInput(edtDinner, txtHasilDinner, "Dinner")
+                    + getGlucoseFromInput(edtSnack, txtHasilSnack, "Snack");
 
-    private void toNotification() {
-        Intent intent = new Intent(getContext(), NotificationActivity.class);
-        startActivity(intent);
+            Intent intent = new Intent(getContext(), CalenderActivity.class);
+            intent.putExtra("totalGlucose", totalGlucose);
+            startActivity(intent);
+        });
+
+        return view;
     }
 
     private void updateGlucoseDisplay() {

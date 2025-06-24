@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="edu.uph.m23si3.glucotrack">
+    package="edu.uph.m23si3.glucotrack" >
 
     <application
         android:name=".MyApplication"
@@ -13,34 +13,32 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.GlucoTrack"
-        tools:targetApi="31">
-
+        tools:targetApi="31" >
+        <activity
+            android:name=".CalenderActivity"
+            android:exported="false" />
         <!-- Onboarding / Start Activities -->
         <activity
             android:name=".StartActivity"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".StartActivity2"
             android:exported="false" />
         <activity
             android:name=".StartActivity3"
-            android:exported="false" />
-
-        <!-- Auth -->
+            android:exported="false" /> <!-- Auth -->
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
         <activity
             android:name=".SignupActivity"
-            android:exported="false" />
-
-        <!-- App core -->
+            android:exported="false" /> <!-- App core -->
         <activity
             android:name=".MainActivity"
             android:exported="false"
@@ -59,4 +57,5 @@
             android:exported="false" />
 
     </application>
+
 </manifest>
