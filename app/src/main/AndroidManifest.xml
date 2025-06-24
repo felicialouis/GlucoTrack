@@ -49,6 +49,9 @@
             android:name=".WelcomeActivity"
             android:exported="false" />
         <activity
+            android:name=".NotificationActivity"
+            android:exported="false" />
+        <activity
             android:name=".AddInsulinNotesActivity"
             android:exported="false" />
         <activity
