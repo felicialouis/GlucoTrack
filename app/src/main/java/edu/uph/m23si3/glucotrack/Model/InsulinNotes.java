@@ -1,27 +1,52 @@
 package edu.uph.m23si3.glucotrack.Model;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
-public class InsulinNotes {
-    private int numberOfUnitOfInsulin;
+public class InsulinNotes extends RealmObject {
+    @PrimaryKey
+    private int id;
+    private String userEmail;
+    private int dose;
     private String notes;
-    private LocalDate date;
-    private LocalTime time;
+    private String time;
+    private long timestamp;
 
-    public InsulinNotes(int numberOfUnitOfInsulin, String notes, LocalDate date, LocalTime time) {
-        this.numberOfUnitOfInsulin = numberOfUnitOfInsulin;
+    public InsulinNotes() {
+        // Required empty constructor by Realm
+    }
+
+    public InsulinNotes(int id, String userEmail, int dose, String notes, String time, long timestamp) {
+        this.id = id;
+        this.userEmail = userEmail;
+        this.dose = dose;
         this.notes = notes;
-        this.date = date;
         this.time = time;
+        this.timestamp = timestamp;
     }
 
-    public int getNumberOfUnitOfInsulin() {
-        return numberOfUnitOfInsulin;
+    public int getId() {
+        return id;
     }
 
-    public void setNumberOfUnitOfInsulin(int numberOfUnitOfInsulin) {
-        this.numberOfUnitOfInsulin = numberOfUnitOfInsulin;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public int getDose() {
+        return dose;
+    }
+
+    public void setDose(int dose) {
+        this.dose = dose;
     }
 
     public String getNotes() {
@@ -32,19 +57,19 @@ public class InsulinNotes {
         this.notes = notes;
     }
 
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public LocalTime getTime() {
+    public String getTime() {
         return time;
     }
 
-    public void setTime(LocalTime time) {
+    public void setTime(String time) {
         this.time = time;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }

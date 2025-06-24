@@ -16,17 +16,15 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import java.util.ArrayList;
-
 import edu.uph.m23si3.glucotrack.Model.Account;
-import edu.uph.m23si3.glucotrack.ui.home.HomeFragment;
+import io.realm.Realm;
 
 public class LoginActivity extends AppCompatActivity {
 
     EditText edtEmail, edtPassword;
     Button btnLogin;
     TextView txvSignup;
-    ArrayList<Account> accounts;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,72 +36,59 @@ public class LoginActivity extends AppCompatActivity {
             return insets;
         });
 
-        accounts = Account.accounts;
-
         edtEmail = findViewById(R.id.edtEmail);
         edtPassword = findViewById(R.id.edtPassword);
         btnLogin = findViewById(R.id.btnLogin);
         txvSignup = findViewById(R.id.txvSignup);
 
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String email = edtEmail.getText().toString().trim();
-                String password = edtPassword.getText().toString().trim();
+        btnLogin.setOnClickListener(v -> {
+            String email = edtEmail.getText().toString().trim();
+            String password = edtPassword.getText().toString().trim();
 
-                if (email.isEmpty() || password.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "Harap isi email dan password!", Toast.LENGTH_SHORT).show();
-                    return; // Stop proses
-                }
+            if (email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(getApplicationContext(), "Both fields are required.", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-                SharedPreferences preferences = getSharedPreferences("user_pref", MODE_PRIVATE);
-                String savedEmail = preferences.getString("email", "");
-                String savedPassword = preferences.getString("password", "");
+            Realm realm = Realm.getDefaultInstance();
 
-                boolean emailFound = false;
+            Account account = realm.where(Account.class)
+                    .equalTo("email", email)
+                    .findFirst();
 
-                if (email.equals(savedEmail) && password.equals(savedPassword)){
-                    emailFound = true;
+            if (account != null) {
+                if (account.getPassword().equals(password)) {
+                    // Simpan sesi login ke SharedPreferences
+                    SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
+                    prefs.edit().putString("userId", email).apply();
+
+                    Toast.makeText(this, "Login succeed!", Toast.LENGTH_SHORT).show();
                     toHome();
                 } else {
-                    for (Account account : accounts) {
-                        if (account.getEmail().equals(email)) {
-                            emailFound = true;
-                            if (account.getPassword().equals(password)) {
-                                toHome();
-                            } else {
-                                Toast toast = Toast.makeText(getApplicationContext(), "Masukkan password yang benar!", Toast.LENGTH_LONG);
-                                toast.setGravity(Gravity.BOTTOM | Gravity.RIGHT, 0, 0);
-                                toast.show();
-                            }
-                            break; // sudah ketemu, stop loop
-                        }
-                    }
+                    showToast("Password is incorrect!");
                 }
-
-                if (!emailFound) {
-                    Toast toast = Toast.makeText(getApplicationContext(), "Email anda belum terdaftar, silahkan Sign Up terlebih dahulu.", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.BOTTOM | Gravity.RIGHT, 0, 0);
-                    toast.show();
-                }
+            } else {
+                showToast("Your email hasn't been registered yet, please do Sign Up.");
             }
+
+            realm.close();
         });
 
-        txvSignup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toSignup();
-            }
-        });
+        txvSignup.setOnClickListener(v -> toSignup());
     }
 
-    public void toHome(){
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+    private void toHome() {
+        startActivity(new Intent(this, MainActivity.class));
+        finish();
     }
 
-    public void toSignup(){
-        Intent intent = new Intent(this, SignupActivity.class);
-        startActivity(intent);
+    private void toSignup() {
+        startActivity(new Intent(this, SignupActivity.class));
+    }
+
+    private void showToast(String message) {
+        Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.BOTTOM | Gravity.RIGHT, 0, 0);
+        toast.show();
     }
 }

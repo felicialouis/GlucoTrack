@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.cardview.widget.CardView
@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
                 <TextView
-                    android:id="@+id/txvNumberOfUnitOfInsulin"
+                    android:id="@+id/txvInsulin"
                     android:layout_width="wrap_content"
                     android:layout_height="55dp"
                     android:textStyle="bold"
@@ -42,7 +42,15 @@
                     android:textColor="@color/black"
                     android:textSize="12sp"
                     android:layout_marginStart="4dp"
+                    android:layout_weight="1"
                     android:text="unit of insulin"/>
+                <ImageView
+                    android:id="@+id/imgMenu"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/menu"
+                    android:contentDescription="Menu" />
+
             </LinearLayout>
             <TextView
                 android:layout_width="wrap_content"
@@ -50,7 +58,7 @@
                 android:textStyle="bold"
                 android:text="Note:"/>
             <TextView
-                android:id="@+id/txvNotes"
+                android:id="@+id/txvNote"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"

@@ -1,23 +1,25 @@
 package edu.uph.m23si3.glucotrack.Model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
-public class Account {
+public class Account extends RealmObject {
+
+    @PrimaryKey
     private String email;
+
     private String password;
+
+    public Account() {
+        // Diperlukan oleh Realm
+    }
 
     public Account(String email, String password) {
         this.email = email;
         this.password = password;
     }
 
-    public static ArrayList<Account> accounts = new ArrayList<>(Arrays.asList(
-            new Account("felicialouis@gmail.com", "1234"),
-            new Account("angelinawijaya@gmail.com", "1234"),
-            new Account("erikaangelia@gmail.com", "1234")
-    ));
-
+    // Getter dan Setter
     public String getEmail() {
         return email;
     }
