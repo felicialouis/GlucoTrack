@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Header Card: Profile + Welcome + Scan Icon -->
+        <!-- Header -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
             android:gravity="center_vertical"
             android:elevation="4dp">
 
-            <!-- Profile Picture -->
+            <!-- PP -->
             <FrameLayout
                 android:layout_width="70dp"
                 android:layout_height="70dp">
@@ -74,7 +74,7 @@
                     android:textColor="#003320" />
             </LinearLayout>
 
-            <!-- Scan Icon -->
+            <!-- Scan -->
             <ImageView
                 android:id="@+id/scan_icon"
                 android:layout_width="32dp"
@@ -85,7 +85,7 @@
         </LinearLayout>
 
 
-        <!-- Personal Info Card -->
+        <!-- Personal Info -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -94,7 +94,6 @@
             android:padding="16dp"
             android:elevation="4dp">
 
-            <!-- Title inside the box -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -105,22 +104,23 @@
                 android:textColor="#FFFFFF"
                 android:layout_marginBottom="12dp" />
 
-            <!-- Name Field -->
+            <!-- Name -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Name"
                 android:textColor="#FFFFFF" />
             <EditText
+                android:id="@+id/edtNama"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:hint="Hannah Morales"
+                android:hint="Enter Your Name"
                 android:background="@drawable/edittext_background"
                 android:padding="12dp"
                 android:textColor="#000000"
                 android:textSize="14sp" />
 
-            <!-- Email Field -->
+            <!-- Email -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -128,9 +128,10 @@
                 android:layout_marginTop="8dp"
                 android:textColor="#FFFFFF" />
             <EditText
+                android:id="@+id/edtEmail"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:hint="hannah@email.com"
+                android:hint="Enter Your Email Address"
                 android:background="@drawable/edittext_background"
                 android:padding="12dp"
                 android:textColor="#000000"
@@ -157,9 +158,10 @@
                         android:text="Age"
                         android:textColor="#FFFFFF" />
                     <EditText
+                        android:id="@+id/edtAge"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
-                        android:hint="23"
+                        android:hint= "Enter Your Age"
                         android:background="@drawable/edittext_background"
                         android:padding="12dp"
                         android:textColor="#000000"
@@ -191,7 +193,7 @@
 
 
 
-        <!-- Health Info Card -->
+        <!-- Health Info -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -202,7 +204,6 @@
             android:layout_marginBottom="16dp"
             android:elevation="4dp">
 
-            <!-- Title inside the box -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -226,7 +227,7 @@
                 android:padding="12dp"
                 android:background="@drawable/edittext_background" />
 
-            <!-- Insulin Therapy + Target Glucose -->
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -285,6 +286,7 @@
                         android:textColor="#FFFFFF" />
 
                     <EditText
+                        android:id="@+id/edtTarget"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:hint="80–130"
