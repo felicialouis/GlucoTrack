@@ -4,6 +4,6 @@
         android:id="@+id/mBersihkanForm"
         android:title="Bersihkan Form" />
     <item
-        android:id="@+id/mPengaturan"
-        android:title="Pengaturan" />
+        android:id="@+id/mLogout"
+        android:title="Log Out" />
 </menu>
