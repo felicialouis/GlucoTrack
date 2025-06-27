@@ -1,256 +1,263 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FAFAFA">
+    android:background="#FAFAFA"
+    android:padding="12dp">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <!-- HEADER -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/header"
+        android:layout_marginTop="30dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <!-- Header/Profile -->
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/profile"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/profile"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <TextView
+            android:id="@+id/todayText"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="12dp"
-            android:background="#00695C"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="16dp"
-            android:elevation="4dp">
+            android:text="Today"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-            <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/profile" />
+        <ImageView
+            android:id="@+id/imgNotification"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/notification"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!--END OF HEADER-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Today"
-                android:textColor="#FFFFFF"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:layout_marginStart="12dp" />
-        </LinearLayout>
+    <!-- Today (Tanggal Input) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
 
-        <!-- Today (Tanggal Input) -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="16dp"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Today"
-                android:textStyle="bold"
-                android:textSize="18sp"
-                android:textColor="#000000"
-                android:layout_marginEnd="16dp" />
-
-            <EditText
-                android:id="@+id/edtDay"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="DD"
-                android:inputType="number"
-                android:maxLength="2"
-                android:gravity="center"
-                android:background="@drawable/edittext_bg"
-                android:padding="8dp"
-                android:textAlignment="center"
-                android:textSize="16sp" />
-
-            <EditText
-                android:id="@+id/edtMonth"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="MM"
-                android:inputType="number"
-                android:maxLength="2"
-                android:gravity="center"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/edittext_bg"
-                android:padding="8dp"
-                android:textAlignment="center"
-                android:textSize="16sp" />
-
-            <EditText
-                android:id="@+id/edtYear"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="YYYY"
-                android:inputType="number"
-                android:maxLength="4"
-                android:gravity="center"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/edittext_bg"
-                android:padding="8dp"
-                android:textAlignment="center"
-                android:textSize="16sp" />
-
-            <ImageView
-                android:id="@+id/tombolkalender"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/calendar"
-                android:layout_marginStart="8dp" />
-        </LinearLayout>
-
-        <!-- Glucose Index Title -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Glucose Index:"
+            android:text="Today"
             android:textStyle="bold"
-            android:textSize="18sp"
-            android:layout_marginBottom="12dp"
-            android:textColor="#333333" />
+            android:textSize="16sp"
+            android:textColor="#000000"
+            android:layout_marginEnd="8dp" />
 
-        <!-- ======= MEAL SECTIONS ======= -->
-
-        <!-- Breakfast -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Breakfast"
-            android:textStyle="bold"
-            android:textSize="17sp" />
         <EditText
-            android:id="@+id/edtBreakfast"
-            android:layout_width="match_parent"
+            android:id="@+id/edtDay"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Enter breakfast info"
+            android:layout_weight="1"
+            android:hint="DD"
+            android:inputType="number"
+            android:maxLength="2"
+            android:gravity="center"
             android:background="@drawable/edittext_bg"
-            android:padding="10dp"
-            android:textSize="16sp"
-            android:layout_marginBottom="4dp" />
-        <TextView
-            android:id="@+id/txtHasilBreakfast"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Glukosa: 0"
-            android:textColor="#555555"
-            android:textSize="16sp"
-            android:layout_marginBottom="12dp" />
+            android:padding="6dp"
+            android:textSize="14sp" />
 
-        <!-- Lunch -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Lunch"
-            android:textStyle="bold"
-            android:textSize="17sp" />
         <EditText
-            android:id="@+id/edtLunch"
-            android:layout_width="match_parent"
+            android:id="@+id/edtMonth"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Enter lunch info"
+            android:layout_weight="1"
+            android:hint="MM"
+            android:inputType="number"
+            android:maxLength="2"
+            android:layout_marginStart="4dp"
+            android:gravity="center"
             android:background="@drawable/edittext_bg"
-            android:padding="10dp"
-            android:textSize="16sp"
-            android:layout_marginBottom="4dp" />
-        <TextView
-            android:id="@+id/txtHasilLunch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Glukosa: 0"
-            android:textColor="#555555"
-            android:textSize="16sp"
-            android:layout_marginBottom="12dp" />
+            android:padding="6dp"
+            android:textSize="14sp" />
 
-        <!-- Dinner -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Dinner"
-            android:textStyle="bold"
-            android:textSize="17sp" />
         <EditText
-            android:id="@+id/edtDinner"
-            android:layout_width="match_parent"
+            android:id="@+id/edtYear"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Enter dinner info"
+            android:layout_weight="1"
+            android:hint="YYYY"
+            android:inputType="number"
+            android:maxLength="4"
+            android:layout_marginStart="4dp"
+            android:gravity="center"
             android:background="@drawable/edittext_bg"
-            android:padding="10dp"
-            android:textSize="16sp"
-            android:layout_marginBottom="4dp" />
-        <TextView
-            android:id="@+id/txtHasilDinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Glukosa: 0"
-            android:textColor="#555555"
-            android:textSize="16sp"
-            android:layout_marginBottom="12dp" />
+            android:padding="6dp"
+            android:textSize="14sp" />
 
-        <!-- Snack -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Snack"
-            android:textStyle="bold"
-            android:textSize="17sp" />
-        <EditText
-            android:id="@+id/edtSnack"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter snack info"
-            android:background="@drawable/edittext_bg"
-            android:padding="10dp"
-            android:textSize="16sp"
-            android:layout_marginBottom="4dp" />
-        <TextView
-            android:id="@+id/txtHasilSnack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Glukosa: 0"
-            android:textColor="#555555"
-            android:textSize="16sp"
-            android:layout_marginBottom="20dp" />
-
-        <!-- Save Button -->
-        <Button
-            android:id="@+id/btnSave"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="SAVE"
-            android:backgroundTint="#00695C"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:layout_marginBottom="8dp" />
-
-        <!-- Total Glukosa -->
-        <TextView
-            android:id="@+id/txtTotal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Total Glukosa: 0"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:textColor="#00796B"
-            android:layout_gravity="center"
-            android:layout_marginBottom="12dp" />
-
-        <!-- Recommendation Button -->
-        <Button
-            android:id="@+id/btnRecommendation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="RECOMMENDATION"
-            android:backgroundTint="#FFD600"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:layout_marginBottom="16dp" />
-
+        <ImageView
+            android:id="@+id/tombolkalender"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/calendar"
+            android:layout_marginStart="6dp" />
     </LinearLayout>
-</ScrollView>
 
+    <!-- Glucose Index Title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Glucose Index:"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:textColor="#333333"
+        android:layout_marginBottom="6dp" />
+
+    <!-- Breakfast -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Breakfast"
+        android:textStyle="bold"
+        android:textSize="15sp" />
+    <EditText
+        android:id="@+id/edtBreakfast"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter breakfast info"
+        android:background="@drawable/edittext_bg"
+        android:padding="8dp"
+        android:textSize="14sp" />
+    <TextView
+        android:id="@+id/txtHasilBreakfast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Glukosa: 0"
+        android:textSize="14sp"
+        android:textColor="#555555"
+        android:layout_marginBottom="6dp" />
+
+    <!-- Lunch -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lunch"
+        android:textStyle="bold"
+        android:textSize="15sp" />
+    <EditText
+        android:id="@+id/edtLunch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter lunch info"
+        android:background="@drawable/edittext_bg"
+        android:padding="8dp"
+        android:textSize="14sp" />
+    <TextView
+        android:id="@+id/txtHasilLunch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Glukosa: 0"
+        android:textSize="14sp"
+        android:textColor="#555555"
+        android:layout_marginBottom="6dp" />
+
+    <!-- Dinner -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dinner"
+        android:textStyle="bold"
+        android:textSize="15sp" />
+    <EditText
+        android:id="@+id/edtDinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter dinner info"
+        android:background="@drawable/edittext_bg"
+        android:padding="8dp"
+        android:textSize="14sp" />
+    <TextView
+        android:id="@+id/txtHasilDinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Glukosa: 0"
+        android:textSize="14sp"
+        android:textColor="#555555"
+        android:layout_marginBottom="6dp" />
+
+    <!-- Snack -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Snack"
+        android:textStyle="bold"
+        android:textSize="15sp" />
+    <EditText
+        android:id="@+id/edtSnack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter snack info"
+        android:background="@drawable/edittext_bg"
+        android:padding="8dp"
+        android:textSize="14sp" />
+    <TextView
+        android:id="@+id/txtHasilSnack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Glukosa: 0"
+        android:textSize="14sp"
+        android:textColor="#555555"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Save Button -->
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="SAVE"
+        android:backgroundTint="#00695C"
+        android:textColor="#FFFFFF"
+        android:textSize="15sp"
+        android:layout_marginBottom="6dp" />
+
+    <!-- Total Glukosa -->
+    <TextView
+        android:id="@+id/txtTotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total Glukosa: 0"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:textColor="#00796B"
+        android:layout_gravity="center"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Recommendation Button -->
+    <Button
+        android:id="@+id/btnRecommendation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="RECOMMENDATION"
+        android:backgroundTint="#FFD600"
+        android:textColor="#FFFFFF"
+        android:textSize="15sp" />
+
+    <ListView
+        android:id="@+id/listRecommendation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:visibility="gone" />
+
+</LinearLayout>
