@@ -1,6 +1,7 @@
 package edu.uph.m23si3.glucotrack.ui.foods;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -14,22 +15,24 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.HashMap;
 
 import edu.uph.m23si3.glucotrack.CalenderActivity;
-import edu.uph.m23si3.glucotrack.NotificationActivity;
 import edu.uph.m23si3.glucotrack.R;
+import edu.uph.m23si3.glucotrack.RecommendationActivity;
 
 public class FoodsFragment extends Fragment {
+
+    private static final int REQUEST_CODE_RECOMMENDATION = 100;
 
     private ImageView imgNotification, tombolkalender;
     private EditText edtBreakfast, edtLunch, edtDinner, edtSnack;
     private TextView txtHasilBreakfast, txtHasilLunch, txtHasilDinner, txtHasilSnack, txtTotal;
-    private Button btnSave;
-
+    private Button btnSave, btnRecommendation;
     private HashMap<String, Integer> glucoseMap;
 
     @SuppressLint("MissingInflatedId")
@@ -54,6 +57,7 @@ public class FoodsFragment extends Fragment {
         txtTotal = view.findViewById(R.id.txtTotal);
 
         btnSave = view.findViewById(R.id.btnSave);
+        btnRecommendation = view.findViewById(R.id.btnRecommendation);
 
         // Glukosa Map
         glucoseMap = new HashMap<>();
@@ -62,6 +66,17 @@ public class FoodsFragment extends Fragment {
         glucoseMap.put("Sayur", 0);
         glucoseMap.put("Telur", 0);
         glucoseMap.put("Apel", 20);
+        glucoseMap.put("Oatmeal", 50);
+        glucoseMap.put("Greek yogurt", 10);
+        glucoseMap.put("Nasi merah", 45);
+        glucoseMap.put("Sup tahu", 15);
+        glucoseMap.put("Smoothie", 25);
+        glucoseMap.put("Edamame", 5);
+        glucoseMap.put("Quinoa salad", 30);
+        glucoseMap.put("Sapo tahu", 20);
+        glucoseMap.put("Ubi", 35);
+        glucoseMap.put("Almond", 5);
+        glucoseMap.put("Capcay", 15);
 
         // Tombol Simpan & Hitung Glukosa
         btnSave.setOnClickListener(v -> updateGlucoseDisplay());
@@ -78,7 +93,32 @@ public class FoodsFragment extends Fragment {
             startActivity(intent);
         });
 
+        // Tombol Recommendation: buka halaman rekomendasi
+        btnRecommendation.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), RecommendationActivity.class);
+            startActivityForResult(intent, REQUEST_CODE_RECOMMENDATION);
+        });
+
         return view;
+    }
+
+    // Menerima hasil dari RecommendationActivity
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_RECOMMENDATION && resultCode == Activity.RESULT_OK && data != null) {
+            String breakfast = data.getStringExtra("breakfast");
+            String lunch = data.getStringExtra("lunch");
+            String dinner = data.getStringExtra("dinner");
+            String snack = data.getStringExtra("snack");
+
+            edtBreakfast.setText(breakfast);
+            edtLunch.setText(lunch);
+            edtDinner.setText(dinner);
+            edtSnack.setText(snack);
+
+            updateGlucoseDisplay();
+        }
     }
 
     private void updateGlucoseDisplay() {
