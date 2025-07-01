@@ -15,9 +15,11 @@
         android:theme="@style/Theme.GlucoTrack"
         tools:targetApi="31" >
         <activity
-            android:name=".CalenderActivity"
+            android:name=".ui.profile.BarcodeActivity"
             android:exported="false" />
-        <!-- Onboarding / Start Activities -->
+        <activity
+            android:name=".CalenderActivity"
+            android:exported="false" /> <!-- Onboarding / Start Activities -->
         <activity
             android:name=".StartActivity"
             android:exported="true" >
@@ -55,7 +57,6 @@
         <activity
             android:name=".ui.profile.ProfileActivity"
             android:exported="false" />
-
     </application>
 
 </manifest>
