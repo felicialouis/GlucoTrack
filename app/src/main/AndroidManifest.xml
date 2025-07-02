@@ -18,9 +18,6 @@
             android:name=".RecommendationActivity"
             android:exported="false" />
         <activity
-            android:name=".RecommendationActivity"
-            android:exported="false" />
-        <activity
             android:name=".CalenderActivity"
             android:exported="false" /> <!-- Onboarding / Start Activities -->
         <activity

@@ -1,10 +1,11 @@
 package edu.uph.m23si3.glucotrack.ui.foods;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -15,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,15 +27,40 @@ import edu.uph.m23si3.glucotrack.RecommendationActivity;
 
 public class FoodsFragment extends Fragment {
 
-    private static final int REQUEST_CODE_RECOMMENDATION = 100;
-
     private ImageView imgNotification, tombolkalender;
     private EditText edtBreakfast, edtLunch, edtDinner, edtSnack;
     private TextView txtHasilBreakfast, txtHasilLunch, txtHasilDinner, txtHasilSnack, txtTotal;
     private Button btnSave, btnRecommendation;
     private HashMap<String, Integer> glucoseMap;
 
-    @SuppressLint("MissingInflatedId")
+    private ActivityResultLauncher<Intent> recommendationLauncher;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Inisialisasi Activity Result Launcher
+        recommendationLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        Intent data = result.getData();
+                        String breakfast = data.getStringExtra("breakfast");
+                        String lunch = data.getStringExtra("lunch");
+                        String dinner = data.getStringExtra("dinner");
+                        String snack = data.getStringExtra("snack");
+
+                        edtBreakfast.setText(breakfast);
+                        edtLunch.setText(lunch);
+                        edtDinner.setText(dinner);
+                        edtSnack.setText(snack);
+
+                        updateGlucoseDisplay();
+                    }
+                }
+        );
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -96,29 +121,10 @@ public class FoodsFragment extends Fragment {
         // Tombol Recommendation: buka halaman rekomendasi
         btnRecommendation.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), RecommendationActivity.class);
-            startActivityForResult(intent, REQUEST_CODE_RECOMMENDATION);
+            recommendationLauncher.launch(intent);
         });
 
         return view;
-    }
-
-    // Menerima hasil dari RecommendationActivity
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_RECOMMENDATION && resultCode == Activity.RESULT_OK && data != null) {
-            String breakfast = data.getStringExtra("breakfast");
-            String lunch = data.getStringExtra("lunch");
-            String dinner = data.getStringExtra("dinner");
-            String snack = data.getStringExtra("snack");
-
-            edtBreakfast.setText(breakfast);
-            edtLunch.setText(lunch);
-            edtDinner.setText(dinner);
-            edtSnack.setText(snack);
-
-            updateGlucoseDisplay();
-        }
     }
 
     private void updateGlucoseDisplay() {
