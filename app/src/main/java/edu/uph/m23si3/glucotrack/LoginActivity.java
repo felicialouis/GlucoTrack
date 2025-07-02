@@ -62,6 +62,15 @@ public class LoginActivity extends AppCompatActivity {
                     SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
                     prefs.edit().putString("userId", email).apply();
 
+                    realm.executeTransaction(r -> {
+                        if (account.getNama() == null) account.setNama("");
+                        if (account.getAge() == null) account.setAge("");
+                        if (account.getTarget() == null) account.setTarget("");
+                        if (account.getGender() == null) account.setGender("Male");
+                        if (account.getDiabetesType() == null) account.setDiabetesType("Type 1");
+                        // insulin (boolean) otomatis default false
+                    });
+
                     Toast.makeText(this, "Login succeed!", Toast.LENGTH_SHORT).show();
                     toHome();
                 } else {

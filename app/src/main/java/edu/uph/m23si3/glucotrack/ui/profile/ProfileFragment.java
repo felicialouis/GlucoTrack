@@ -3,7 +3,6 @@ package edu.uph.m23si3.glucotrack.ui.profile;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -23,31 +22,30 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import edu.uph.m23si3.glucotrack.LoginActivity;
+import edu.uph.m23si3.glucotrack.Model.Account;
 import edu.uph.m23si3.glucotrack.R;
+import io.realm.Realm;
 
 public class ProfileFragment extends Fragment {
-
-    private static final int PICK_IMAGE_REQUEST = 1001;
 
     private Spinner spinnerGender, spinnerDiabetes;
     private Switch switchInsulin;
     private EditText edtNama, edtEmail, edtAge, edtTarget;
-    private TextView profileName;
+    private TextView profileName, txtInsulinStatus;
     private ImageView imgProfile;
     private FrameLayout frameProfile;
-    private SharedPreferences prefs;
+
+    private Account account;
+    private Realm realm;
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         // Inisialisasi view
@@ -62,131 +60,112 @@ public class ProfileFragment extends Fragment {
         frameProfile = view.findViewById(R.id.frame_profile);
         imgProfile = view.findViewById(R.id.profile_image);
 
-        prefs = requireContext().getSharedPreferences("user_profile", Context.MODE_PRIVATE);
+        realm = Realm.getDefaultInstance();
 
-        // Load data dari shared preferences
-        edtNama.setText(prefs.getString("nama", ""));
-        profileName.setText(prefs.getString("nama", ""));
-        edtEmail.setText(prefs.getString("email", ""));
-        edtAge.setText(prefs.getString("age", ""));
-        edtTarget.setText(prefs.getString("target", ""));
+        SharedPreferences session = requireContext().getSharedPreferences("user_session", Context.MODE_PRIVATE);
+        String email = session.getString("userId", null);
 
-        String savedImg = prefs.getString("profile_image", null);
-        if (savedImg != null) {
-            imgProfile.setImageURI(Uri.parse(savedImg));
+        if (email == null) {
+            redirectToLogin();
+            return null;
         }
 
-        // Auto-save EditText + update nama header
-        edtNama.addTextChangedListener(createAutoSaveWatcher("nama", true));
-        edtEmail.addTextChangedListener(createAutoSaveWatcher("email", false));
-        edtAge.addTextChangedListener(createAutoSaveWatcher("age", false));
-        edtTarget.addTextChangedListener(createAutoSaveWatcher("target", false));
+        account = realm.where(Account.class).equalTo("email", email).findFirst();
 
-        // Setup spinner Gender
+        if (account == null) {
+            redirectToLogin();
+            return null;
+        }
+
+        // Tampilkan data ke UI
+        edtNama.setText(account.getNama());
+        edtEmail.setText(account.getEmail());   // dari login
+        edtEmail.setEnabled(false);             // agar tidak bisa diedit
+        edtAge.setText(account.getAge());
+        edtTarget.setText(account.getTarget());
+        profileName.setText(account.getNama());
+
+        TextView txtInsulinStatus = view.findViewById(R.id.txtInsulinStatus);
+
+        switchInsulin.setChecked(account.isInsulin());
+        txtInsulinStatus.setText(account.isInsulin() ? "Yes" : "No");
+
+        switchInsulin.setOnCheckedChangeListener((btn, checked) -> {
+            realm.executeTransaction(r -> account.setInsulin(checked));
+            txtInsulinStatus.setText(checked ? "Yes" : "No");
+        });
+
+
+        edtNama.addTextChangedListener(createRealmWatcher("nama", true));
+        edtAge.addTextChangedListener(createRealmWatcher("age", false));
+        edtTarget.addTextChangedListener(createRealmWatcher("target", false));
+
+        // Spinner Gender
         ArrayAdapter<String> genderAdapter = new ArrayAdapter<>(requireContext(),
                 android.R.layout.simple_spinner_item, new String[]{"Male", "Female", "Other"});
         genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerGender.setAdapter(genderAdapter);
-        spinnerGender.setSelection(prefs.getInt("gender", 0));
-        spinnerGender.setOnItemSelectedListener(generateSpinnerListener("gender", "gender_text"));
+        int genderIndex = genderAdapter.getPosition(account.getGender());
+        spinnerGender.setSelection(genderIndex);
+        spinnerGender.setOnItemSelectedListener(generateSpinnerListener("gender"));
 
-        // Setup spinner Diabetes
+        // Spinner Diabetes Type
         ArrayAdapter<String> diabetesAdapter = new ArrayAdapter<>(requireContext(),
                 android.R.layout.simple_spinner_item, new String[]{"Type 1", "Type 2", "Gestational", "Other"});
         diabetesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerDiabetes.setAdapter(diabetesAdapter);
-        spinnerDiabetes.setSelection(prefs.getInt("diabetes_pos", 0));
-        spinnerDiabetes.setOnItemSelectedListener(generateSpinnerListener("diabetes_pos", "diabetes_text"));
-
-        // Setup switch insulin
-        boolean insulinStatus = prefs.getBoolean("insulin", false);
-        switchInsulin.setChecked(insulinStatus);
-        switchInsulin.setText(insulinStatus ? "Yes" : "No");
-        switchInsulin.setOnCheckedChangeListener((btn, checked) -> {
-            prefs.edit().putBoolean("insulin", checked).apply();
-            switchInsulin.setText(checked ? "Yes" : "No");
-        });
-
-        // Photo click to pick image
-        frameProfile.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_PICK);
-            intent.setType("image/*");
-            startActivityForResult(intent, PICK_IMAGE_REQUEST);
-        });
+        int diabetesIndex = diabetesAdapter.getPosition(account.getDiabetesType());
+        spinnerDiabetes.setSelection(diabetesIndex);
+        spinnerDiabetes.setOnItemSelectedListener(generateSpinnerListener("diabetesType"));
 
         return view;
     }
-    private AdapterView.OnItemSelectedListener generateSpinnerListener(String key, String keyText) {
-        return new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                prefs.edit()
-                        .putInt(key, pos)
-                        .putString(keyText, parent.getItemAtPosition(pos).toString())
-                        .apply();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // tidak digunakan
-            }
-        };
+    private void redirectToLogin() {
+        Toast.makeText(requireContext(), "Silakan login terlebih dahulu.", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(requireContext(), LoginActivity.class));
+        requireActivity().finish();
     }
 
-    private TextWatcher createAutoSaveWatcher(String key, boolean updateName) {
+    private TextWatcher createRealmWatcher(String fieldName, boolean updateName) {
         return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int st, int c, int a) {
+            @Override public void beforeTextChanged(CharSequence s, int st, int c, int a) {}
+            @Override public void onTextChanged(CharSequence s, int st, int b, int c) {
+                realm.executeTransaction(r -> {
+                    switch (fieldName) {
+                        case "nama":
+                            account.setNama(s.toString());
+                            if (updateName) profileName.setText(s.toString());
+                            break;
+                        case "age":
+                            account.setAge(s.toString());
+                            break;
+                        case "target":
+                            account.setTarget(s.toString());
+                            break;
+                    }
+                });
             }
-
-            @Override
-            public void onTextChanged(CharSequence s, int st, int b, int c) {
-                prefs.edit().putString(key, s.toString()).apply();
-                if (updateName) profileName.setText(s.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
+            @Override public void afterTextChanged(Editable s) {}
         };
     }
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true); // pastikan ini
+
+    private AdapterView.OnItemSelectedListener generateSpinnerListener(String fieldName) {
+        return new AdapterView.OnItemSelectedListener() {
+            @Override public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                String selected = parent.getItemAtPosition(pos).toString();
+                realm.executeTransaction(r -> {
+                    if (fieldName.equals("gender")) account.setGender(selected);
+                    else if (fieldName.equals("diabetesType")) account.setDiabetesType(selected);
+                });
+            }
+
+            @Override public void onNothingSelected(AdapterView<?> parent) {}
+        };
     }
 
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_profile, menu);
-        super.onCreateOptionsMenu(menu, inflater);
+    public void onDestroy() {
+        super.onDestroy();
+        if (realm != null) realm.close();
     }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.mBersihkanForm) {
-            edtNama.setText("");
-            edtEmail.setText("");
-            edtAge.setText("");
-            edtTarget.setText("");
-            spinnerGender.setSelection(0);
-            spinnerDiabetes.setSelection(0);
-            switchInsulin.setChecked(false);
-            imgProfile.setImageResource(R.drawable.profile_image);
-            prefs.edit().clear().apply();
-            Toast.makeText(requireContext(), "Form dibersihkan", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-        if (item.getItemId() == R.id.mLogout) {
-            prefs.edit().clear().apply();
-            Intent intent = new Intent(requireContext(), LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            requireActivity().finish();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
 }
-

@@ -9,6 +9,13 @@ public class Account extends RealmObject {
     private String email;
 
     private String password;
+    private String nama;
+    private String age;
+    private String target;
+    private String gender;
+    private String diabetesType;
+    private boolean insulin;
+    private String profileImageUri;
 
     public Account() {
         // Diperlukan oleh Realm
@@ -34,5 +41,61 @@ public class Account extends RealmObject {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getNama() {
+        return nama;
+    }
+
+    public void setNama(String nama) {
+        this.nama = nama;
+    }
+
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
+
+    public String getTarget() {
+        return target;
+    }
+
+    public void setTarget(String target) {
+        this.target = target;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getDiabetesType() {
+        return diabetesType;
+    }
+
+    public void setDiabetesType(String diabetesType) {
+        this.diabetesType = diabetesType;
+    }
+
+    public boolean isInsulin() {
+        return insulin;
+    }
+
+    public void setInsulin(boolean insulin) {
+        this.insulin = insulin;
+    }
+
+    public String getProfileImageUri() {
+        return profileImageUri;
+    }
+
+    public void setProfileImageUri(String profileImageUri) {
+        this.profileImageUri = profileImageUri;
     }
 }
