@@ -46,7 +46,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-    <!--END OF HEADER-->
 
     <!-- Today (Tanggal Input) -->
     <LinearLayout
@@ -131,14 +130,17 @@
         android:text="Breakfast"
         android:textStyle="bold"
         android:textSize="15sp" />
-    <EditText
-        android:id="@+id/edtBreakfast"
+    <AutoCompleteTextView
+        android:id="@+id/autoBreakfast"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter breakfast info"
+        android:hint="Select breakfast"
         android:background="@drawable/edittext_bg"
         android:padding="8dp"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:inputType="none"
+        android:focusable="true"
+        android:clickable="true" />
     <TextView
         android:id="@+id/txtHasilBreakfast"
         android:layout_width="wrap_content"
@@ -155,14 +157,17 @@
         android:text="Lunch"
         android:textStyle="bold"
         android:textSize="15sp" />
-    <EditText
-        android:id="@+id/edtLunch"
+    <AutoCompleteTextView
+        android:id="@+id/autoLunch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter lunch info"
+        android:hint="Select lunch"
         android:background="@drawable/edittext_bg"
         android:padding="8dp"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:inputType="none"
+        android:focusable="true"
+        android:clickable="true" />
     <TextView
         android:id="@+id/txtHasilLunch"
         android:layout_width="wrap_content"
@@ -179,14 +184,17 @@
         android:text="Dinner"
         android:textStyle="bold"
         android:textSize="15sp" />
-    <EditText
-        android:id="@+id/edtDinner"
+    <AutoCompleteTextView
+        android:id="@+id/autoDinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter dinner info"
+        android:hint="Select dinner"
         android:background="@drawable/edittext_bg"
         android:padding="8dp"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:inputType="none"
+        android:focusable="true"
+        android:clickable="true" />
     <TextView
         android:id="@+id/txtHasilDinner"
         android:layout_width="wrap_content"
@@ -203,14 +211,17 @@
         android:text="Snack"
         android:textStyle="bold"
         android:textSize="15sp" />
-    <EditText
-        android:id="@+id/edtSnack"
+    <AutoCompleteTextView
+        android:id="@+id/autoSnack"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter snack info"
+        android:hint="Select snack"
         android:background="@drawable/edittext_bg"
         android:padding="8dp"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:inputType="none"
+        android:focusable="true"
+        android:clickable="true" />
     <TextView
         android:id="@+id/txtHasilSnack"
         android:layout_width="wrap_content"

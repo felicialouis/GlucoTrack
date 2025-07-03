@@ -1,7 +1,6 @@
 package edu.uph.m23si3.glucotrack;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -11,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import edu.uph.m23si3.glucotrack.Model.GlucoseTrack;
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 
 public class CalenderActivity extends AppCompatActivity {
 
@@ -26,21 +24,18 @@ public class CalenderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calender);
 
-        // Init Realm
-        Realm.init(this);
-        RealmConfiguration config = new RealmConfiguration.Builder().allowWritesOnUiThread(true).build();
-        realm = Realm.getInstance(config);
+        // Ambil default instance dari Realm (sudah diatur di MyApplication)
+        realm = Realm.getDefaultInstance();
 
         editDay = findViewById(R.id.editDay);
         editMonth = findViewById(R.id.editMonth);
         editYear = findViewById(R.id.editYear);
         btnTrack = findViewById(R.id.btnTrack);
-        txtTotalKarbo = findViewById(R.id.txtTotalKarbo); // textview yg di bawah button
+        txtTotalKarbo = findViewById(R.id.txtTotalKarbo); // textview di bawah button
 
         // Dapatkan totalGlucose dari intent
         int totalGlucose = getIntent().getIntExtra("totalGlucose", 0);
 
-        // Simpan ke Realm saat Activity dibuka
         if (totalGlucose > 0) {
             Toast.makeText(this, "Data diterima dari sebelumnya: " + totalGlucose, Toast.LENGTH_SHORT).show();
         }
@@ -58,7 +53,6 @@ public class CalenderActivity extends AppCompatActivity {
             String tanggal = day + "-" + month + "-" + year;
 
             if (totalGlucose > 0) {
-                // Simpan data
                 saveGlucoseToRealm(tanggal, totalGlucose);
             }
 
@@ -81,5 +75,13 @@ public class CalenderActivity extends AppCompatActivity {
             record.setTotalGlucose(glucose);
         });
         Toast.makeText(this, "Data disimpan ke Realm!", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (realm != null && !realm.isClosed()) {
+            realm.close();
+        }
     }
 }

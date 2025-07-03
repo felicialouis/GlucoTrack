@@ -14,6 +14,7 @@ public class MyApplication extends Application {
         RealmConfiguration config = new RealmConfiguration.Builder()
                 .name("glucotrack.realm") // Nama file Realm
                 .deleteRealmIfMigrationNeeded() // Opsional: untuk development
+                .allowWritesOnUiThread(true)
                 .build();
 
         Realm.setDefaultConfiguration(config);
