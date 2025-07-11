@@ -3,13 +3,11 @@ package edu.uph.m23si3.glucotrack.ui.profile;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -33,11 +31,13 @@ import io.realm.Realm;
 
 public class ProfileFragment extends Fragment {
 
+    private static final int REQUEST_IMAGE_PICK = 1001;
+
     private Spinner spinnerGender, spinnerDiabetes;
     private Switch switchInsulin;
     private EditText edtNama, edtEmail, edtAge, edtTarget;
     private TextView profileName, txtInsulinStatus;
-    private ImageView imgProfile;
+    private ImageView imgProfile, editIcon;
     private FrameLayout frameProfile;
 
     private Account account;
@@ -48,7 +48,6 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        // Inisialisasi view
         spinnerGender = view.findViewById(R.id.spinner_gender);
         spinnerDiabetes = view.findViewById(R.id.spinner_diabetes);
         switchInsulin = view.findViewById(R.id.switch_insulin);
@@ -59,6 +58,7 @@ public class ProfileFragment extends Fragment {
         edtTarget = view.findViewById(R.id.edtTarget);
         frameProfile = view.findViewById(R.id.frame_profile);
         imgProfile = view.findViewById(R.id.profile_image);
+        editIcon = view.findViewById(R.id.edit_icon);
 
         realm = Realm.getDefaultInstance();
 
@@ -77,7 +77,6 @@ public class ProfileFragment extends Fragment {
             return null;
         }
 
-        // Tampilkan data ke UI
         edtNama.setText(account.getNama());
         edtEmail.setText(account.getEmail());   // dari login
         edtEmail.setEnabled(false);             // agar tidak bisa diedit
@@ -94,7 +93,6 @@ public class ProfileFragment extends Fragment {
             realm.executeTransaction(r -> account.setInsulin(checked));
             txtInsulinStatus.setText(checked ? "Yes" : "No");
         });
-
 
         edtNama.addTextChangedListener(createRealmWatcher("nama", true));
         edtAge.addTextChangedListener(createRealmWatcher("age", false));
@@ -118,8 +116,27 @@ public class ProfileFragment extends Fragment {
         spinnerDiabetes.setSelection(diabetesIndex);
         spinnerDiabetes.setOnItemSelectedListener(generateSpinnerListener("diabetesType"));
 
+        // Open image picker when clicking image or icon
+        View.OnClickListener imageClickListener = v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            startActivityForResult(intent, REQUEST_IMAGE_PICK);
+        };
+        imgProfile.setOnClickListener(imageClickListener);
+        editIcon.setOnClickListener(imageClickListener);
+
         return view;
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_IMAGE_PICK && resultCode == getActivity().RESULT_OK && data != null) {
+            Uri imageUri = data.getData();
+            imgProfile.setImageURI(imageUri);
+        }
+    }
+
     private void redirectToLogin() {
         Toast.makeText(requireContext(), "Silakan login terlebih dahulu.", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(requireContext(), LoginActivity.class));
