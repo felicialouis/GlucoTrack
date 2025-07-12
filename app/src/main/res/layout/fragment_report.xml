@@ -55,37 +55,34 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
         <!-- END HEADER -->
 
+        <!-- DATE PICKER -->
         <LinearLayout
-            android:id="@+id/filter_bar"
+            android:id="@+id/datePickerContainer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_height="48dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_spinner"
             android:gravity="center_vertical"
-            android:layout_marginTop="50dp"
-            android:layout_marginBottom="20dp">
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:clickable="true"
+            android:focusable="true">
 
-            <ImageView
-                android:id="@+id/btnPrev"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/ic_arrow_left"
-                android:contentDescription="Previous" />
-
-            <Spinner
-                android:id="@+id/spinnerRange"
+            <TextView
+                android:id="@+id/tvSelectedDate"
                 android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_height="48dp"
-                android:spinnerMode="dropdown"
-                android:popupBackground="@color/white" />
+                android:text="Select Date"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
 
             <ImageView
-                android:id="@+id/btnNext"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/ic_arrow_right"
-                android:contentDescription="Next" />
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/calendar" />
         </LinearLayout>
+
 
         <!-- STATISTIC CARDS -->
         <LinearLayout
@@ -186,16 +183,6 @@
             </LinearLayout>
 
         </LinearLayout>
-
-        <!-- DATE RANGE TEXT -->
-        <TextView
-            android:id="@+id/tvDateRange"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="1 Juni 2025 - 8 Juni 2025"
-            android:textSize="14sp"
-            android:textColor="@color/black"
-            android:layout_marginTop="16dp" />
 
         <!-- GRAPH -->
         <ImageView
