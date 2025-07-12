@@ -11,18 +11,20 @@ public class InsulinNotes extends RealmObject {
     private String notes;
     private String time;
     private long timestamp;
+    private String date;
 
     public InsulinNotes() {
         // Required empty constructor by Realm
     }
 
-    public InsulinNotes(int id, String userEmail, int dose, String notes, String time, long timestamp) {
+    public InsulinNotes(int id, String userEmail, int dose, String notes, String time, long timestamp, String date) {
         this.id = id;
         this.userEmail = userEmail;
         this.dose = dose;
         this.notes = notes;
         this.time = time;
         this.timestamp = timestamp;
+        this.date = date;
     }
 
     public int getId() {
@@ -71,5 +73,13 @@ public class InsulinNotes extends RealmObject {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }

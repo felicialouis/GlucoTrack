@@ -122,4 +122,9 @@ public class InsulinNotesAdapter extends RecyclerView.Adapter<InsulinNotesAdapte
                 .setNegativeButton("Cancel", null)
                 .show();
     }
+
+    public void updateData(RealmResults<InsulinNotes> newNotes) {
+        this.notesList = newNotes;
+        notifyDataSetChanged();
+    }
 }

@@ -26,6 +26,7 @@ import io.realm.Realm;
 public class AddInsulinNotesActivity extends AppCompatActivity {
 
     private TextView txvSeeRecommendation;
+    private String selectedDate;
     private Button btnSave;
     private EditText edtDose, edtNote;
     private int editingId = -1;
@@ -37,6 +38,13 @@ public class AddInsulinNotesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_insulin_notes);
 
         realm = Realm.getDefaultInstance();
+
+        selectedDate = getIntent().getStringExtra("selected_date");
+
+        if (selectedDate == null) {
+            // fallback kalau null = hari ini
+            selectedDate = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault()).format(new java.util.Date());
+        }
 
         // View binding
         txvSeeRecommendation = findViewById(R.id.txvSeeRecommendation);
@@ -143,6 +151,7 @@ public class AddInsulinNotesActivity extends AppCompatActivity {
                     existing.setDose(dose);
                     existing.setNotes(notes);
                     existing.setTime(time);
+                    existing.setDate(selectedDate);
                     existing.setTimestamp(timestamp);
                     return;
                 }
@@ -157,6 +166,7 @@ public class AddInsulinNotesActivity extends AppCompatActivity {
             newNote.setDose(dose);
             newNote.setNotes(notes);
             newNote.setTime(time);
+            newNote.setDate(selectedDate);
             newNote.setTimestamp(timestamp);
         }, () -> {
             finish();
