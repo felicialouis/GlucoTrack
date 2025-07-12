@@ -27,6 +27,7 @@ import androidx.fragment.app.Fragment;
 import edu.uph.m23si3.glucotrack.LoginActivity;
 import edu.uph.m23si3.glucotrack.Model.Account;
 import edu.uph.m23si3.glucotrack.R;
+import edu.uph.m23si3.glucotrack.ui.barcode.BarcodeActivity;
 import io.realm.Realm;
 
 public class ProfileFragment extends Fragment {
@@ -37,7 +38,7 @@ public class ProfileFragment extends Fragment {
     private Switch switchInsulin;
     private EditText edtNama, edtEmail, edtAge, edtTarget;
     private TextView profileName, txtInsulinStatus;
-    private ImageView imgProfile, editIcon;
+    private ImageView imgProfile, editIcon, scanIcon;
     private FrameLayout frameProfile;
 
     private Account account;
@@ -59,6 +60,7 @@ public class ProfileFragment extends Fragment {
         frameProfile = view.findViewById(R.id.frame_profile);
         imgProfile = view.findViewById(R.id.profile_image);
         editIcon = view.findViewById(R.id.edit_icon);
+        scanIcon = view.findViewById(R.id.scan_icon);
 
         realm = Realm.getDefaultInstance();
 
@@ -124,6 +126,12 @@ public class ProfileFragment extends Fragment {
         };
         imgProfile.setOnClickListener(imageClickListener);
         editIcon.setOnClickListener(imageClickListener);
+
+        // Open BarcodeActivity when clicking scan icon
+        scanIcon.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), BarcodeActivity.class);
+            startActivity(intent);
+        });
 
         return view;
     }
