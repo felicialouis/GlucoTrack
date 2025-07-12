@@ -6,7 +6,6 @@
     android:padding="24dp"
     android:background="#FFFFFF">
 
-    <!-- Tombol Back -->
     <ImageView
         android:id="@+id/btn_back"
         android:layout_width="40dp"
@@ -18,7 +17,6 @@
         android:padding="4dp"
         android:layout_marginBottom="16dp" />
 
-    <!-- Judul -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -29,7 +27,6 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="16dp" />
 
-    <!-- Gambar Barcode -->
     <ImageView
         android:id="@+id/img_barcode"
         android:layout_width="250dp"
