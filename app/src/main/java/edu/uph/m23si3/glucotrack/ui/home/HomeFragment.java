@@ -49,6 +49,13 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        // Cek login session
+        String userEmail = getLoggedInUserEmail();
+        if (userEmail == null) {
+            redirectToLogin();
+            return null;
+        }
+
         realm = Realm.getDefaultInstance();
 
         imgNotification = binding.imgNotification;
@@ -63,13 +70,12 @@ public class HomeFragment extends Fragment {
         txvTanggalInsulin = binding.txvTanggalInsulin;
         String todayDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         tanggalYangSedangDilihat = todayDate;
-        txvTanggalInsulin.setText("Menampilkan catatan insulin untuk: " + todayDate);
+        updateTanggalInsulinText(todayDate); // <- gunakan pengecekan today
 
         rvInsulinNotes = binding.rvInsulinNotes;
         rvInsulinNotes.setLayoutManager(new LinearLayoutManager(getContext()));
 
         // Load data dari Realm
-        String userEmail = getLoggedInUserEmail();
         insulinNotesList = realm.where(InsulinNotes.class)
                 .equalTo("userEmail", userEmail)
                 .sort("timestamp", Sort.DESCENDING)
@@ -128,7 +134,7 @@ public class HomeFragment extends Fragment {
 
     private void loadInsulinNotesForDate(String date) {
         tanggalYangSedangDilihat = date;
-        txvTanggalInsulin.setText("Menampilkan catatan insulin untuk: " + date);
+        updateTanggalInsulinText(date); // <- gunakan method baru
 
         RealmResults<InsulinNotes> filteredNotes = realm.where(InsulinNotes.class)
                 .equalTo("userEmail", getLoggedInUserEmail())
@@ -139,5 +145,27 @@ public class HomeFragment extends Fragment {
         adapter.updateData(filteredNotes);
     }
 
+    private void updateTanggalInsulinText(String date) {
+        Calendar calNow = Calendar.getInstance();
+        int yearNow = calNow.get(Calendar.YEAR);
+        int monthNow = calNow.get(Calendar.MONTH);
+        int dayNow = calNow.get(Calendar.DAY_OF_MONTH);
 
+        String[] parts = date.split("-");
+        int yearPicked = Integer.parseInt(parts[0]);
+        int monthPicked = Integer.parseInt(parts[1]) - 1; // Calendar bulan dimulai dari 0
+        int dayPicked = Integer.parseInt(parts[2]);
+
+        if (yearNow == yearPicked && monthNow == monthPicked && dayNow == dayPicked) {
+            txvTanggalInsulin.setText("Today");
+        } else {
+            txvTanggalInsulin.setText("Showing " + date + " Insulin Notes");
+        }
+    }
+
+    private void redirectToLogin() {
+        Intent intent = new Intent(requireContext(), edu.uph.m23si3.glucotrack.LoginActivity.class);
+        startActivity(intent);
+        requireActivity().finish(); // supaya tidak bisa kembali ke Home setelah redirect
+    }
 }

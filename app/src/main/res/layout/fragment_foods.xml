@@ -47,81 +47,27 @@
             app:layout_constraintBottom_toBottomOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Today (Tanggal Input) -->
+    <!-- Glucose Index Title -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginBottom="8dp">
-
+        android:orientation="horizontal">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Today"
+            android:text="Glucose Index:"
             android:textStyle="bold"
             android:textSize="16sp"
-            android:textColor="#000000"
-            android:layout_marginEnd="8dp" />
-
-        <EditText
-            android:id="@+id/edtDay"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:textColor="#333333"
             android:layout_weight="1"
-            android:hint="DD"
-            android:inputType="number"
-            android:maxLength="2"
-            android:gravity="center"
-            android:background="@drawable/edittext_bg"
-            android:padding="6dp"
-            android:textSize="14sp" />
-
-        <EditText
-            android:id="@+id/edtMonth"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="MM"
-            android:inputType="number"
-            android:maxLength="2"
-            android:layout_marginStart="4dp"
-            android:gravity="center"
-            android:background="@drawable/edittext_bg"
-            android:padding="6dp"
-            android:textSize="14sp" />
-
-        <EditText
-            android:id="@+id/edtYear"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="YYYY"
-            android:inputType="number"
-            android:maxLength="4"
-            android:layout_marginStart="4dp"
-            android:gravity="center"
-            android:background="@drawable/edittext_bg"
-            android:padding="6dp"
-            android:textSize="14sp" />
-
+            android:layout_marginBottom="6dp" />
         <ImageView
-            android:id="@+id/tombolkalender"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/calendar"
-            android:layout_marginStart="6dp" />
+            android:id="@+id/btnViewHistory"
+            android:layout_gravity="center"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/calendar"/>
     </LinearLayout>
-
-    <!-- Glucose Index Title -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Glucose Index:"
-        android:textStyle="bold"
-        android:textSize="16sp"
-        android:textColor="#333333"
-        android:layout_marginBottom="6dp" />
 
     <!-- Breakfast -->
     <TextView
