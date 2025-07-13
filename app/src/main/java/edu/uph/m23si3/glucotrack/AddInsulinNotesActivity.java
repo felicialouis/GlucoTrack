@@ -19,8 +19,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 
+import edu.uph.m23si3.glucotrack.Model.GlucoseTrack;
 import edu.uph.m23si3.glucotrack.Model.InsulinNotes;
+import edu.uph.m23si3.glucotrack.Model.UserProfile;
 import io.realm.Realm;
 
 public class AddInsulinNotesActivity extends AppCompatActivity {
@@ -95,6 +98,17 @@ public class AddInsulinNotesActivity extends AppCompatActivity {
     }
 
     private void showRecommendationDialog() {
+        String userEmail = getLoggedInUserEmail();
+        UserProfile profile = realm.where(UserProfile.class)
+                .equalTo("email", userEmail)
+                .findFirst();
+
+        // Cek jika weight atau target belum diisi
+        if (profile == null || profile.getWeight() == null || profile.getWeight() <= 0 || profile.getTarget() == null || profile.getTarget() <= 0) {
+            Toast.makeText(this, "Belum bisa menggunakan fitur, lengkapi profil anda!", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = LayoutInflater.from(this).inflate(R.layout.see_recommendation_modal, null);
         builder.setView(view);
@@ -116,17 +130,70 @@ public class AddInsulinNotesActivity extends AppCompatActivity {
         spinner.setAdapter(adapter);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                switch (items[pos]) {
-                    case "Based on current condition": txvDose.setText("20"); break;
-                    case "Based on breakfast": txvDose.setText("30"); break;
-                    case "Based on lunch": txvDose.setText("40"); break;
-                    case "Based on dinner": txvDose.setText("50"); break;
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                String condition = items[pos];
+
+                // Ambil data profil
+                int weight = profile.getWeight();
+                int target = profile.getTarget();
+
+                // Ambil glukosa dari GlucoseTrack
+                GlucoseTrack track = realm.where(GlucoseTrack.class)
+                        .equalTo("date", selectedDate)
+                        .findFirst();
+
+                if (track == null) {
+                    txvDose.setText("0");
+                    Toast.makeText(AddInsulinNotesActivity.this, "Belum ada data makanan pada tanggal ini.", Toast.LENGTH_SHORT).show();
                 }
+
+                int glucose = 0;
+                if (track != null) {
+                    switch (condition) {
+                        case "Based on current condition":
+                            glucose = 0;
+                            break;
+                        case "Based on breakfast":
+                            if (track.getBreakfast() == null || track.getBreakfast().isEmpty()) {
+                                Toast.makeText(AddInsulinNotesActivity.this, "You haven't input breakfast.", Toast.LENGTH_SHORT).show();
+                                txvDose.setText("0");
+                                return;
+                            }
+                            glucose = getGlucoseValue(track.getBreakfast());
+                            break;
+                        case "Based on lunch":
+                            if (track.getLunch() == null || track.getLunch().isEmpty()) {
+                                Toast.makeText(AddInsulinNotesActivity.this, "You haven't input lunch.", Toast.LENGTH_SHORT).show();
+                                txvDose.setText("0");
+                                return;
+                            }
+                            glucose = getGlucoseValue(track.getLunch());
+                            break;
+                        case "Based on dinner":
+                            if (track.getDinner() == null || track.getDinner().isEmpty()) {
+                                Toast.makeText(AddInsulinNotesActivity.this, "You haven't input dinner.", Toast.LENGTH_SHORT).show();
+                                txvDose.setText("0");
+                                return;
+                            }
+                            glucose = getGlucoseValue(track.getDinner());
+                            break;
+                    }
+                }
+
+                // Hitung dosis
+                double carbRatio = 500.0 / (weight * 0.5);
+                double correctionFactor = 1800.0 / (weight * 0.5);
+                double dose = (glucose / carbRatio) + ((248 - target) / correctionFactor);
+                int roundedDose = (int) Math.round(dose);
+
+                txvDose.setText(String.valueOf(roundedDose));
             }
 
-            @Override public void onNothingSelected(AdapterView<?> parent) {}
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
+
 
         btnClose.setOnClickListener(v -> dialog.dismiss());
         btnUse.setOnClickListener(v -> {
@@ -136,6 +203,7 @@ public class AddInsulinNotesActivity extends AppCompatActivity {
 
         dialog.show();
     }
+
 
     private void saveInsulinNoteToRealm(String userEmail, int dose, String notes, String time) {
         realm.executeTransactionAsync(r -> {
@@ -185,6 +253,32 @@ public class AddInsulinNotesActivity extends AppCompatActivity {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         return now.format(formatter);
     }
+
+    private int getGlucoseValue(String foodName) {
+        if (foodName == null) return 0;
+
+        // Mapping makanan dan nilai glukosa – kamu bisa pindahkan ke tempat shared kalau perlu
+        HashMap<String, Integer> glucoseMap = new HashMap<>();
+        glucoseMap.put("Nasi", 60);
+        glucoseMap.put("Roti", 40);
+        glucoseMap.put("Sayur", 0);
+        glucoseMap.put("Telur", 0);
+        glucoseMap.put("Apel", 20);
+        glucoseMap.put("Oatmeal", 50);
+        glucoseMap.put("Greek yogurt", 10);
+        glucoseMap.put("Nasi merah", 45);
+        glucoseMap.put("Sup tahu", 15);
+        glucoseMap.put("Smoothie", 25);
+        glucoseMap.put("Edamame", 5);
+        glucoseMap.put("Quinoa salad", 30);
+        glucoseMap.put("Sapo tahu", 20);
+        glucoseMap.put("Ubi", 35);
+        glucoseMap.put("Almond", 5);
+        glucoseMap.put("Capcay", 15);
+
+        return glucoseMap.getOrDefault(foodName, 0);
+    }
+
 
     @Override
     protected void onDestroy() {

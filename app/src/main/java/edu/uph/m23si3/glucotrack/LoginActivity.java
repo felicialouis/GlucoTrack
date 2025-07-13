@@ -17,6 +17,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import edu.uph.m23si3.glucotrack.Model.Account;
+import edu.uph.m23si3.glucotrack.Model.UserProfile;
 import io.realm.Realm;
 
 public class LoginActivity extends AppCompatActivity {
@@ -62,13 +63,22 @@ public class LoginActivity extends AppCompatActivity {
                     SharedPreferences prefs = getSharedPreferences("user_session", MODE_PRIVATE);
                     prefs.edit().putString("userId", email).apply();
 
+                    // Cek dan buat UserProfile jika belum ada
                     realm.executeTransaction(r -> {
-                        if (account.getNama() == null) account.setNama("");
-                        if (account.getAge() == null) account.setAge("");
-                        if (account.getTarget() == null) account.setTarget("");
-                        if (account.getGender() == null) account.setGender("Male");
-                        if (account.getDiabetesType() == null) account.setDiabetesType("Type 1");
-                        // insulin (boolean) otomatis default false
+                        UserProfile profile = r.where(UserProfile.class)
+                                .equalTo("email", email)
+                                .findFirst();
+
+                        if (profile == null) {
+                            profile = r.createObject(UserProfile.class, email);
+                            profile.setNama("");
+                            profile.setAge(null);
+                            profile.setGender("Male");
+                            profile.setDiabetesType("Type 1");
+                            profile.setTarget(null);
+                            profile.setWeight(null);
+                            profile.setInsulin(false);
+                        }
                     });
 
                     Toast.makeText(this, "Login succeed!", Toast.LENGTH_SHORT).show();
@@ -82,6 +92,7 @@ public class LoginActivity extends AppCompatActivity {
 
             realm.close();
         });
+
 
         txvSignup.setOnClickListener(v -> toSignup());
     }
