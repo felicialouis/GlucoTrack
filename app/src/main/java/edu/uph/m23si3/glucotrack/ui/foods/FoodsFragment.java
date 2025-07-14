@@ -1,5 +1,6 @@
 package edu.uph.m23si3.glucotrack.ui.foods;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -29,6 +32,7 @@ import java.util.Locale;
 import edu.uph.m23si3.glucotrack.Model.GlucoseTrack;
 import edu.uph.m23si3.glucotrack.NotificationActivity;
 import edu.uph.m23si3.glucotrack.R;
+import edu.uph.m23si3.glucotrack.RecommendationActivity;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -43,6 +47,8 @@ public class FoodsFragment extends Fragment {
     private HashMap<String, Integer> glucoseMap;
     private Realm realm;
     private String selectedDate;
+    private ActivityResultLauncher<Intent> recommendationLauncher;
+
 
     @Nullable
     @Override
@@ -113,9 +119,31 @@ public class FoodsFragment extends Fragment {
         // Save button
         btnSave.setOnClickListener(v -> saveToRealm());
 
-        // Recommendation
+        // Inisialisasi Activity Result Launcher
+        // Activity Result untuk menerima hasil rekomendasi
+        recommendationLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        Intent data = result.getData();
+                        String breakfast = data.getStringExtra("breakfast");
+                        String lunch = data.getStringExtra("lunch");
+                        String dinner = data.getStringExtra("dinner");
+                        String snack = data.getStringExtra("snack");
+
+                        autoBreakfast.setText(breakfast);
+                        autoLunch.setText(lunch);
+                        autoDinner.setText(dinner);
+                        autoSnack.setText(snack);
+
+                        updateGlucoseDisplay(); // hitung ulang total glukosa
+                    }
+                }
+        );
+
         btnRecommendation.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Fitur rekomendasi belum diterapkan di versi ini", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getContext(), RecommendationActivity.class);
+            recommendationLauncher.launch(intent);
         });
 
         return view;
@@ -241,5 +269,15 @@ public class FoodsFragment extends Fragment {
     private void toNotification() {
         Intent intent = new Intent(getContext(), NotificationActivity.class);
         startActivity(intent);
+    }
+
+    private void updateGlucoseDisplay() {
+        int breakfastGlu = getGlucose(autoBreakfast, txtHasilBreakfast);
+        int lunchGlu = getGlucose(autoLunch, txtHasilLunch);
+        int dinnerGlu = getGlucose(autoDinner, txtHasilDinner);
+        int snackGlu = getGlucose(autoSnack, txtHasilSnack);
+
+        int total = breakfastGlu + lunchGlu + dinnerGlu + snackGlu;
+        txtTotal.setText("Glukosa total: " + total);
     }
 }

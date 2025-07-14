@@ -81,7 +81,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     });
 
-                    Toast.makeText(this, "Login succeed!", Toast.LENGTH_SHORT).show();
+                    showToast("Login succeed!");
                     toHome();
                 } else {
                     showToast("Password is incorrect!");
