@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -25,7 +28,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import edu.uph.m23si3.glucotrack.LoginActivity;
-import edu.uph.m23si3.glucotrack.Model.Account;
 import edu.uph.m23si3.glucotrack.Model.UserProfile;
 import edu.uph.m23si3.glucotrack.R;
 import edu.uph.m23si3.glucotrack.ui.barcode.BarcodeActivity;
@@ -39,9 +41,8 @@ public class ProfileFragment extends Fragment {
     private Switch switchInsulin;
     private EditText edtNama, edtEmail, edtAge, edtTarget, edtWeight;
     private TextView profileName, txtInsulinStatus;
-    private ImageView imgProfile, editIcon, scanIcon, logout;
+    private ImageView imgProfile, editIcon, scanIcon;
     private FrameLayout frameProfile;
-
     private UserProfile profile;
     private Realm realm;
 
@@ -63,9 +64,9 @@ public class ProfileFragment extends Fragment {
         imgProfile = view.findViewById(R.id.profile_image);
         editIcon = view.findViewById(R.id.edit_icon);
         scanIcon = view.findViewById(R.id.scan_icon);
-        logout = view.findViewById(R.id.logout);
 
         realm = Realm.getDefaultInstance();
+        setHasOptionsMenu(true); // aktifkan menu
 
         SharedPreferences session = requireContext().getSharedPreferences("user_session", Context.MODE_PRIVATE);
         String email = session.getString("userId", null);
@@ -91,7 +92,6 @@ public class ProfileFragment extends Fragment {
         profileName.setText(profile.getNama());
 
         txtInsulinStatus = view.findViewById(R.id.txtInsulinStatus);
-
         switchInsulin.setChecked(profile.isInsulin());
         txtInsulinStatus.setText(profile.isInsulin() ? "Yes" : "No");
 
@@ -123,7 +123,7 @@ public class ProfileFragment extends Fragment {
         spinnerDiabetes.setSelection(diabetesIndex);
         spinnerDiabetes.setOnItemSelectedListener(generateSpinnerListener("diabetesType"));
 
-        // Open image picker when clicking image or icon
+        // Open image picker
         View.OnClickListener imageClickListener = v -> {
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
@@ -137,7 +137,32 @@ public class ProfileFragment extends Fragment {
             startActivity(intent);
         });
 
-        logout.setOnClickListener(v -> {
+        return view;
+    }
+
+    // Menu atas
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_profile, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        SharedPreferences session = requireContext().getSharedPreferences("user_session", Context.MODE_PRIVATE);
+
+        int id = item.getItemId();
+        if (id == R.id.mBersihkanForm) {
+            edtNama.setText("");
+            edtAge.setText("");
+            edtTarget.setText("");
+            edtWeight.setText("");
+            switchInsulin.setChecked(false);
+            spinnerGender.setSelection(0);
+            spinnerDiabetes.setSelection(0);
+            Toast.makeText(requireContext(), "Form dibersihkan", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (id == R.id.mLogout) {
             new android.app.AlertDialog.Builder(requireContext())
                     .setTitle("Confirm Logout")
                     .setMessage("Are you sure you want to logout?")
@@ -149,9 +174,10 @@ public class ProfileFragment extends Fragment {
                     })
                     .setNegativeButton("Cancel", null)
                     .show();
-        });
+            return true;
+        }
 
-        return view;
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -173,7 +199,6 @@ public class ProfileFragment extends Fragment {
     private TextWatcher createRealmWatcher(String fieldName, boolean updateName) {
         return new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int st, int c, int a) {}
-
             @Override public void onTextChanged(CharSequence s, int st, int b, int c) {
                 realm.executeTransaction(r -> {
                     switch (fieldName) {
@@ -181,50 +206,29 @@ public class ProfileFragment extends Fragment {
                             profile.setNama(s.toString());
                             if (updateName) profileName.setText(s.toString());
                             break;
-
                         case "age":
-                            if (s.toString().trim().isEmpty()) {
-                                profile.setAge(null);
-                            } else {
-                                try {
-                                    profile.setAge(Integer.parseInt(s.toString()));
-                                } catch (NumberFormatException e) {
-                                    profile.setAge(null);
-                                }
-                            }
+                            profile.setAge(parseIntegerOrNull(s.toString()));
                             break;
-
                         case "target":
-                            if (s.toString().trim().isEmpty()) {
-                                profile.setTarget(null);
-                            } else {
-                                try {
-                                    profile.setTarget(Integer.parseInt(s.toString()));
-                                } catch (NumberFormatException e) {
-                                    profile.setTarget(null);
-                                }
-                            }
+                            profile.setTarget(parseIntegerOrNull(s.toString()));
                             break;
-
                         case "weight":
-                            if (s.toString().trim().isEmpty()) {
-                                profile.setWeight(null);
-                            } else {
-                                try {
-                                    profile.setWeight(Integer.parseInt(s.toString()));
-                                } catch (NumberFormatException e) {
-                                    profile.setWeight(null);
-                                }
-                            }
+                            profile.setWeight(parseIntegerOrNull(s.toString()));
                             break;
                     }
                 });
             }
-
             @Override public void afterTextChanged(Editable s) {}
         };
     }
 
+    private Integer parseIntegerOrNull(String s) {
+        try {
+            return s.trim().isEmpty() ? null : Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
 
     private AdapterView.OnItemSelectedListener generateSpinnerListener(String fieldName) {
         return new AdapterView.OnItemSelectedListener() {
