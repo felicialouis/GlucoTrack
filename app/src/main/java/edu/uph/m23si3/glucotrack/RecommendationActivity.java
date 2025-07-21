@@ -27,26 +27,43 @@ public class RecommendationActivity extends AppCompatActivity {
 
         realm = Realm.getDefaultInstance();
 
-        // Cek dulu apakah data kosong, jika iya, insert secara async
-        if (realm.where(Recommendation.class).findAll().isEmpty()) {
-            realm.executeTransactionAsync(bgRealm -> {
-                bgRealm.insert(new Recommendation("TYPE 1 (~130g)", "Oatmeal", "Greek yogurt", "Nasi merah", "Sup tahu"));
-                bgRealm.insert(new Recommendation("TYPE 2 (~120g)", "Smoothie", "Edamame", "Quinoa salad", "Sapo tahu"));
-                bgRealm.insert(new Recommendation("TYPE 3 (~125g)", "Ubi", "Almond", "Nasi merah", "Capcay"));
-            }, () -> {
-                // onSuccess: Setelah data berhasil dimasukkan, ambil dan tampilkan
-                setupList();
-            }, error -> {
-                // onError
-                error.printStackTrace();
-            });
-        } else {
-            setupList();
-        }
+        // Hapus data lama terlebih dahulu
+        realm.executeTransaction(bgRealm -> {
+            bgRealm.delete(Recommendation.class);
+        });
+
+        // Masukkan data terbaru
+        realm.executeTransactionAsync(bgRealm -> {
+            // TYPE 1 (~85g)
+            bgRealm.insert(new Recommendation(
+                    "TYPE 1 (~105g)",
+                    "Roti gandum isi telur dan alpukat",
+                    "Greek yogurt dengan chia seed",
+                    "Nasi merah + ayam kukus + tumis bayam",
+                    "Sup tahu dan sayur bening"
+            ));
+
+            // TYPE 2 (~70g)
+            bgRealm.insert(new Recommendation(
+                    "TYPE 2 (~70g)",
+                    "Salad sayuran dengan ayam panggang (15g)",
+                    "Sup kacang merah dengan sayuran (20g)",
+                    "Ikan panggang dengan brokoli (30g)",
+                    "Omelet sayuran dengan keju rendah lemak (5g)"
+            ));
+
+            // TYPE 3 (~65g)
+            bgRealm.insert(new Recommendation(
+                    "TYPE 3 (~65g)",
+                    "Greek yogurt dengan buah dan madu (25g)",
+                    "Ayam panggang dengan kacang hijau (12g)",
+                    "Tahu kukus dengan sayuran (10g)",
+                    "Smoothie bayam dan alpukat (18g)"
+            ));
+        }, this::setupList, Throwable::printStackTrace);
     }
 
     private void setupList() {
-        // Ambil data dari Realm (copy ke memory agar tidak auto update)
         recList = realm.copyFromRealm(realm.where(Recommendation.class).findAll());
 
         RecommendationAdapter adapter = new RecommendationAdapter(this, recList);

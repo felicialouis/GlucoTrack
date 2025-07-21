@@ -34,7 +34,6 @@ import edu.uph.m23si3.glucotrack.NotificationActivity;
 import edu.uph.m23si3.glucotrack.R;
 import edu.uph.m23si3.glucotrack.RecommendationActivity;
 import io.realm.Realm;
-import io.realm.RealmResults;
 
 public class FoodsFragment extends Fragment {
 
@@ -49,13 +48,11 @@ public class FoodsFragment extends Fragment {
     private String selectedDate;
     private ActivityResultLauncher<Intent> recommendationLauncher;
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_foods, container, false);
 
-        // Cek login session
         SharedPreferences session = requireContext().getSharedPreferences("user_session", Context.MODE_PRIVATE);
         String userEmail = session.getString("userId", null);
         if (userEmail == null) {
@@ -63,10 +60,8 @@ public class FoodsFragment extends Fragment {
             return null;
         }
 
-        // Init Realm
         realm = Realm.getDefaultInstance();
 
-        // Bind views
         btnViewHistory = view.findViewById(R.id.btnViewHistory);
         todayText = view.findViewById(R.id.todayText);
         autoBreakfast = view.findViewById(R.id.autoBreakfast);
@@ -80,32 +75,26 @@ public class FoodsFragment extends Fragment {
         txtTotal = view.findViewById(R.id.txtTotal);
         btnSave = view.findViewById(R.id.btnSave);
         btnRecommendation = view.findViewById(R.id.btnRecommendation);
-
         imgNotification = view.findViewById(R.id.imgNotification);
         imgNotification.setOnClickListener(v -> toNotification());
 
-        // Default selectedDate = today
         selectedDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         updateTodayText();
 
-        // Glucose Map
         glucoseMap = new HashMap<>();
-        glucoseMap.put("Nasi", 60);
-        glucoseMap.put("Roti", 40);
-        glucoseMap.put("Sayur", 0);
-        glucoseMap.put("Telur", 0);
-        glucoseMap.put("Apel", 20);
-        glucoseMap.put("Oatmeal", 50);
-        glucoseMap.put("Greek yogurt", 10);
-        glucoseMap.put("Nasi merah", 45);
-        glucoseMap.put("Sup tahu", 15);
-        glucoseMap.put("Smoothie", 25);
-        glucoseMap.put("Edamame", 5);
-        glucoseMap.put("Quinoa salad", 30);
-        glucoseMap.put("Sapo tahu", 20);
-        glucoseMap.put("Ubi", 35);
-        glucoseMap.put("Almond", 5);
-        glucoseMap.put("Capcay", 15);
+        // Tambahan makanan dari RecommendationActivity
+        glucoseMap.put("Roti gandum isi telur dan alpukat", 35);
+        glucoseMap.put("Greek yogurt dengan chia seed", 10);
+        glucoseMap.put("Nasi merah + ayam kukus + tumis bayam", 45);
+        glucoseMap.put("Sup tahu dan sayur bening", 15);
+        glucoseMap.put("Salad sayuran dengan ayam panggang (15g)", 15);
+        glucoseMap.put("Sup kacang merah dengan sayuran (20g)", 20);
+        glucoseMap.put("Ikan panggang dengan brokoli (30g)", 30);
+        glucoseMap.put("Omelet sayuran dengan keju rendah lemak (5g)", 5);
+        glucoseMap.put("Greek yogurt dengan buah dan madu (25g)", 25);
+        glucoseMap.put("Ayam panggang dengan kacang hijau (12g)", 12);
+        glucoseMap.put("Tahu kukus dengan sayuran (10g)", 10);
+        glucoseMap.put("Smoothie bayam dan alpukat (18g)", 18);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, new ArrayList<>(glucoseMap.keySet()));
         setupAutoComplete(autoBreakfast, adapter);
@@ -113,14 +102,9 @@ public class FoodsFragment extends Fragment {
         setupAutoComplete(autoDinner, adapter);
         setupAutoComplete(autoSnack, adapter);
 
-        // Kalender
         btnViewHistory.setOnClickListener(v -> showDatePicker());
-
-        // Save button
         btnSave.setOnClickListener(v -> saveToRealm());
 
-        // Inisialisasi Activity Result Launcher
-        // Activity Result untuk menerima hasil rekomendasi
         recommendationLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -136,7 +120,7 @@ public class FoodsFragment extends Fragment {
                         autoDinner.setText(dinner);
                         autoSnack.setText(snack);
 
-                        updateGlucoseDisplay(); // hitung ulang total glukosa
+                        updateGlucoseDisplay();
                     }
                 }
         );
@@ -151,11 +135,7 @@ public class FoodsFragment extends Fragment {
 
     private void updateTodayText() {
         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-        if (selectedDate.equals(today)) {
-            todayText.setText("Today");
-        } else {
-            todayText.setText(selectedDate);
-        }
+        todayText.setText(selectedDate.equals(today) ? "Today" : selectedDate);
     }
 
     private void showDatePicker() {
@@ -187,7 +167,7 @@ public class FoodsFragment extends Fragment {
                 + getGlucose(autoDinner, txtHasilDinner)
                 + getGlucose(autoSnack, txtHasilSnack);
 
-        txtTotal.setText("Glucose Total: " + total);
+        txtTotal.setText("Glukosa total: " + total);
 
         realm.executeTransaction(r -> {
             GlucoseTrack existing = r.where(GlucoseTrack.class)
@@ -210,13 +190,13 @@ public class FoodsFragment extends Fragment {
             }
         });
 
-        Toast.makeText(getContext(), "Glucose saved for " + selectedDate, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "Data glukosa berhasil disimpan untuk " + selectedDate, Toast.LENGTH_SHORT).show();
     }
 
     private int getGlucose(AutoCompleteTextView input, TextView resultView) {
         String food = input.getText().toString().trim();
-        int glu = glucoseMap.containsKey(food) ? glucoseMap.get(food) : 0;
-        resultView.setText("Glucose: " + glu);
+        int glu = glucoseMap.getOrDefault(food, 0);
+        resultView.setText("Glukosa: " + glu);
         return glu;
     }
 
@@ -239,24 +219,24 @@ public class FoodsFragment extends Fragment {
             autoDinner.setText(track.getDinner());
             autoSnack.setText(track.getSnack());
 
-            txtHasilBreakfast.setText("Glucose: " + glucoseMap.getOrDefault(track.getBreakfast(), 0));
-            txtHasilLunch.setText("Glucose: " + glucoseMap.getOrDefault(track.getLunch(), 0));
-            txtHasilDinner.setText("Glucose: " + glucoseMap.getOrDefault(track.getDinner(), 0));
-            txtHasilSnack.setText("Glucose: " + glucoseMap.getOrDefault(track.getSnack(), 0));
+            txtHasilBreakfast.setText("Glukosa: " + glucoseMap.getOrDefault(track.getBreakfast(), 0));
+            txtHasilLunch.setText("Glukosa: " + glucoseMap.getOrDefault(track.getLunch(), 0));
+            txtHasilDinner.setText("Glukosa: " + glucoseMap.getOrDefault(track.getDinner(), 0));
+            txtHasilSnack.setText("Glukosa: " + glucoseMap.getOrDefault(track.getSnack(), 0));
 
-            txtTotal.setText("Glucose total: " + track.getTotalGlucose());
+            txtTotal.setText("Glukosa total: " + track.getTotalGlucose());
         } else {
             autoBreakfast.setText("");
             autoLunch.setText("");
             autoDinner.setText("");
             autoSnack.setText("");
 
-            txtHasilBreakfast.setText("Glucose: 0");
-            txtHasilLunch.setText("Glucose: 0");
-            txtHasilDinner.setText("Glucose: 0");
-            txtHasilSnack.setText("Glucose: 0");
+            txtHasilBreakfast.setText("Glukosa: 0");
+            txtHasilLunch.setText("Glukosa: 0");
+            txtHasilDinner.setText("Glukosa: 0");
+            txtHasilSnack.setText("Glukosa: 0");
 
-            txtTotal.setText("Glucose Total: 0");
+            txtTotal.setText("Glukosa total: 0");
         }
     }
 
