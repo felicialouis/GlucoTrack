@@ -62,9 +62,8 @@ public class InsulinNotesAdapter extends RecyclerView.Adapter<InsulinNotesAdapte
         holder.txvInsulin.setText(String.valueOf(note.getDose()));
         holder.txvNote.setText(note.getNotes());
 
-        // Format waktu dari string atau timestamp
-        String time = note.getTime(); // misal "08:30"
-        holder.txvTime.setText(time); // Atau tambahkan format lebih bagus
+        String time = note.getTime();
+        holder.txvTime.setText(time);
 
         holder.imgMenu.setOnClickListener(v -> showPopupMenu(v, note.getId()));
     }

@@ -78,6 +78,7 @@ public class HomeFragment extends Fragment {
         // Load data dari Realm
         insulinNotesList = realm.where(InsulinNotes.class)
                 .equalTo("userEmail", userEmail)
+                .equalTo("date", todayDate)
                 .sort("timestamp", Sort.DESCENDING)
                 .findAll();
 
