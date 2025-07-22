@@ -30,9 +30,9 @@ Klik tautan berikut untuk melihat demo aplikasi **GlucoTrack+** dalam bentuk scr
 
 
 ## Teknologi yang Digunakan
-- Android Studio (Java)
-- Realm Database – untuk penyimpanan lokal yang efisien dan reaktif
-- SharedPreferences – untuk pengelolaan sesi login
+- **Android Studio (Java)**
+- **Realm Database** – untuk penyimpanan lokal yang efisien dan reaktif
+- **SharedPreferences** – untuk pengelolaan sesi login
 
 
 ## Kontributor
