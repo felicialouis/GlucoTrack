@@ -26,7 +26,7 @@ Proyek ini dikembangkan dalam rangka mendukung *Sustainable Development Goal 3 (
 
 
 ## Demo Aplikasi
-Klik tautan berikut untuk melihat demo aplikasi **GlucoTrack+** dalam bentuk screen recording:  [Lihat Video](https://uph365-my.sharepoint.com/:v:/g/personal/03081230039_student_uph_edu/EVBqy7rYVVNNk_Gr0I-6l9kBX4OIonWM_sxt2vDWYOw4og?e=ujr0pM))
+Klik tautan berikut untuk melihat demo aplikasi **GlucoTrack+** dalam bentuk screen recording:  [Lihat Video](https://uph365-my.sharepoint.com/:v:/g/personal/03081230039_student_uph_edu/EVBqy7rYVVNNk_Gr0I-6l9kBX4OIonWM_sxt2vDWYOw4og?e=ujr0pM)
 
 
 ## Teknologi yang Digunakan
