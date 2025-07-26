@@ -26,7 +26,7 @@ Proyek ini dikembangkan dalam rangka mendukung *Sustainable Development Goal 3 (
 
 
 ## Demo Aplikasi
-Klik tautan berikut untuk melihat demo aplikasi **GlucoTrack+** dalam bentuk screen recording:  [Lihat Video] (https://youtu.be/eTg_DrfoiSE)
+Klik tautan berikut untuk melihat demo aplikasi **GlucoTrack+** dalam bentuk screen recording: (https://youtu.be/eTg_DrfoiSE)
 
 
 ## Teknologi yang Digunakan
